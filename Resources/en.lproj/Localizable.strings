@@ -1,0 +1,23 @@
+// Localizable.strings
+
+"End" = "End";
+
+"now playing" = "Now playing";
+
+"Pause" = "Pause";
+
+"Paused" = "Paused";
+
+"Play" = "Play";
+
+"Playing" = "Playing";
+
+"Playlist" = "Playlist";
+
+"Settings" = "Settings";
+
+"Skip back" = "Skip back";
+
+"Skip forward" = "Skip forward";
+
+"Start" = "Start";
