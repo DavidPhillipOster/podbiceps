@@ -146,7 +146,10 @@
   } else {
     image = [[UIImage imageNamed:@"unplayed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
   }
-  cell.bottomIconView.image = image;
+  cell.imageView.image = image;
+
+  MPMediaItemArtwork *artwork = [cast valueForProperty: MPMediaItemPropertyArtwork];
+  cell.bottomIconView.image = [artwork imageWithSize:cell.imageSize];
   
   return cell;
 }

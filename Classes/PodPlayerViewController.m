@@ -59,6 +59,9 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 }
 
 - (void)dealloc {
+  [_player endGeneratingPlaybackNotifications];
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc removeObserver:self];
   [self setUpdateTimeSliderTimer:nil];
 }
 
@@ -114,6 +117,12 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
         } else {
           [self setPlayer:[MPMusicPlayerController iPodMusicPlayer]];
         }
+        [_player setShuffleMode: MPMusicShuffleModeOff];
+        [_player setRepeatMode: MPMusicRepeatModeNone];
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(playingItemDidChange:) name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:_player];
+        [nc addObserver:self selector:@selector(playbackStateChanged::) name:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:_player];
+        [_player beginGeneratingPlaybackNotifications];
       }
       if (nil == _nowPlayingInfo) {
         [self setNowPlayingInfo:[MPNowPlayingInfoCenter defaultCenter]];
@@ -142,6 +151,16 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
     }
   }
 }
+
+
+- (void)playingItemDidChange:(NSNotification *)note {
+// TODO: write playingItemDidChange
+}
+
+- (void)playbackStateChanged:(NSNotification *)note {
+// TODO: write playbackStateChanged
+}
+
 
 - (BOOL)isPlaying {
   if (_player) {
