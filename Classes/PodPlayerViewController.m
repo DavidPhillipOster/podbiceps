@@ -23,6 +23,13 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 
+#if 1
+//#define DLOG(...) printf("%s\n", [[NSString stringWithFormat: __VA_ARGS__] UTF8String])
+#define DLOG(...) NSLog(__VA_ARGS__)
+#else
+#define DLOG(...) do{}while(0)
+#endif
+
 NSString *const kDidFinishPlayingNotification = @"DidFinishPlayingNotification";
 
 static PodPlayerViewController *sPodPlayerViewController = nil;
@@ -65,6 +72,10 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
   [self setUpdateTimeSliderTimer:nil];
 }
 
+- (BOOL)canBecomeFirstResponder {
+  return YES;
+}
+
 - (void)loadView {
   CGRect bounds = [[UIScreen mainScreen] bounds];
   PodPlayerView *view = [[PodPlayerView alloc] initWithFrame:bounds];
@@ -83,15 +94,61 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-  [super viewWillDisappear:animated];
+  [super viewWillAppear:animated];
   if (self.isPlaying) {
     [self startUpdateTimer];
   }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  [self becomeFirstResponder];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
   [self setUpdateTimeSliderTimer:nil];
+}
+
+- (void)remoteControlReceivedWithEvent:(UIEvent *)event {
+  switch (event.subtype) {
+  case UIEventSubtypeRemoteControlPlay:
+    DLOG(@"Play");
+    [self play:nil];
+    break;
+  case UIEventSubtypeRemoteControlPause:
+    DLOG(@"Pause");
+    [self pause:nil];
+    break;
+  case UIEventSubtypeRemoteControlNextTrack:
+    DLOG(@"NextTrack");
+    [self next:nil];
+    break;
+  case UIEventSubtypeRemoteControlPreviousTrack:
+    DLOG(@"PreviousTrack");
+    [self previous:nil];
+    break;
+  case UIEventSubtypeRemoteControlBeginSeekingBackward:
+    DLOG(@"BeginSeekingBack");
+    [self skipBack:nil];
+    break;
+  case UIEventSubtypeRemoteControlEndSeekingBackward:
+    DLOG(@"EndSeekingBack");
+    break;
+  case UIEventSubtypeRemoteControlBeginSeekingForward:
+    DLOG(@"BeginSeekingForward");
+    [self skipForward:nil];
+   break;
+  case UIEventSubtypeRemoteControlEndSeekingForward:
+    DLOG(@"EndSeekingForward");
+    break;
+  case UIEventSubtypeRemoteControlTogglePlayPause:
+    DLOG(@"TogglePlayPause");
+    break;
+  default:
+    DLOG(@"other");
+    break;
+  }
 }
 
 
@@ -120,35 +177,46 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
         [_player setShuffleMode: MPMusicShuffleModeOff];
         [_player setRepeatMode: MPMusicRepeatModeNone];
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self selector:@selector(playingItemDidChange:) name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:_player];
-        [nc addObserver:self selector:@selector(playbackStateChanged::) name:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:_player];
+        [nc addObserver:self
+               selector:@selector(playingItemDidChange:)
+                   name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
+                 object:_player];
+        [nc addObserver:self
+               selector:@selector(playbackStateChanged:)
+                   name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
+                 object:_player];
         [_player beginGeneratingPlaybackNotifications];
       }
       if (nil == _nowPlayingInfo) {
         [self setNowPlayingInfo:[MPNowPlayingInfoCenter defaultCenter]];
       }
     }
-    if (_cast) {
-      NSMutableAttributedString *s = [[NSMutableAttributedString alloc] init];
-      [s appendAttributedString:AttrBold(_cast.title)];
-      NSMutableArray *body = [NSMutableArray array];
-      [body addObject:@""];
-      if (_cast.albumTitle) { [body addObject:_cast.albumTitle]; }
-      if (_cast.releaseDate) { [body addObject:HumanReadableDate(_cast.releaseDate)]; }
-      if (_cast.playbackDuration) {[body addObject:HumanReadableDuration(_cast.playbackDuration)];}
-      [s appendAttributedString:Attr([body componentsJoinedByString:@" - "])];
+    [self playCast:_cast];
+  }
+}
 
-      PodPlayerView *playerView = self.playerView;
-      playerView.info.attributedText = s;
-      MPMediaItemCollection *collection = [MPMediaItemCollection collectionWithItems:_casts];
-      [_player setQueueWithItemCollection:collection];
-      [_player setNowPlayingItem:_cast];
-      [_player play];
-      playerView.timeSlider.maximumValue = _cast.playbackDuration;
-      playerView.timeSlider.value = _cast.bookmarkTime;
-      [self play:nil];
-      [self updateTimeSlider:nil];
-    }
+- (void)playCast:(MPMediaItem *)cast {
+  _cast = cast;
+  if (_cast) {
+    NSMutableAttributedString *s = [[NSMutableAttributedString alloc] init];
+    [s appendAttributedString:AttrBold(_cast.title)];
+    NSMutableArray *body = [NSMutableArray array];
+    [body addObject:@""];
+    if (_cast.albumTitle) { [body addObject:_cast.albumTitle]; }
+    if (_cast.releaseDate) { [body addObject:HumanReadableDate(_cast.releaseDate)]; }
+    if (_cast.playbackDuration) {[body addObject:HumanReadableDuration(_cast.playbackDuration)];}
+    [s appendAttributedString:Attr([body componentsJoinedByString:@" - "])];
+
+    PodPlayerView *playerView = self.playerView;
+    playerView.info.attributedText = s;
+    MPMediaItemCollection *collection = [MPMediaItemCollection collectionWithItems:_casts];
+    [_player setQueueWithItemCollection:collection];
+    [_player setNowPlayingItem:_cast];
+    [_player play];
+    playerView.timeSlider.maximumValue = _cast.playbackDuration;
+    playerView.timeSlider.value = _cast.bookmarkTime;
+    [self play:nil];
+    [self updateTimeSlider:nil];
   }
 }
 
@@ -183,7 +251,12 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 }
 
 - (void)startUpdateTimer {
-  [self setUpdateTimeSliderTimer:[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateTimeSlider:) userInfo:nil repeats:YES]];
+  NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1
+                                                    target:self
+                                                  selector:@selector(updateTimeSlider:)
+                                                  userInfo:nil
+                                                   repeats:YES];
+  [self setUpdateTimeSliderTimer:timer];
 }
 
 - (void)setUpdateTimeSliderTimer:(NSTimer *)timer {
@@ -285,6 +358,20 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 
 - (IBAction)gotoEnd:(id)sender {
   [self setReadHead:self.duration];
+}
+
+- (IBAction)next:(id)sender {
+  NSUInteger index = [_casts indexOfObject:_cast];
+  if (NSNotFound != index && index + 1 < [_casts count]) {
+    [self playCast:[_casts objectAtIndex:index + 1]];
+  }
+}
+
+- (IBAction)previous:(id)sender {
+  NSUInteger index = [_casts indexOfObject:_cast];
+  if (NSNotFound != index && 0 < index) {
+    [self playCast:[_casts objectAtIndex:index - 1]];
+  }
 }
 
 

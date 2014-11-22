@@ -40,6 +40,10 @@
 
 - (IBAction)gotoStart:(id)sender;
 - (IBAction)gotoEnd:(id)sender;
+
+- (IBAction)next:(id)sender;
+- (IBAction)previous:(id)sender;
+
 @end
 
 // Object is the MPMediaItem
