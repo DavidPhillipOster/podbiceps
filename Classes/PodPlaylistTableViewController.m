@@ -19,6 +19,8 @@
 @interface PodPlaylistTableViewController ()
 @property(nonatomic) MPMediaItem *currentlyPlaying;
 @property(nonatomic) NSMutableDictionary *mediaProperties;
+// Key is podcast 'album' name.
+@property(nonatomic) NSMutableDictionary *albumImageCache;
 @end
 
 @implementation PodPlaylistTableViewController
@@ -26,6 +28,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
+    _albumImageCache = [NSMutableDictionary dictionary];
     [self setTitle:NSLocalizedString(@"Playlist", 0)];
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(libraryDidChange) name:MPMediaLibraryDidChangeNotification object:nil];
@@ -43,10 +46,12 @@
   [self setMediaProperties:[NSMutableDictionary dictionary]];
   [self.tableView registerClass:[PodPlaylistTableViewCell class] forCellReuseIdentifier:@"cast"];
   [self.tableView setRowHeight:84];
+#if 0 // We don't have any settings yet. When we do, turn this back on.
   UIImage *settingsImage = [[UIImage imageNamed:@"settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
   UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:settingsImage
       style:UIBarButtonItemStylePlain target:self action:@selector(showSettings:)];
   [self.navigationItem setLeftBarButtonItem:settings];
+#endif
   [self.navigationItem setRightBarButtonItem:self.editButtonItem];
   [self libraryDidChange];
 }
@@ -54,6 +59,7 @@
 - (void)didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
   // Dispose of any resources that can be recreated.
+  [_albumImageCache removeAllObjects];
 }
 
 - (void)undoablyMoveItemAt:(NSIndexPath *)source to:(NSIndexPath *)destination {
@@ -138,18 +144,27 @@
   cell.detailTextLabel.text = [a componentsJoinedByString:@" "];
   UIImage *image = nil;
   if (_currentlyPlaying == cast) {
-    image = [[UIImage imageNamed:@"playing"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    image = [UIImage imageNamed:@"playing"];
   } else if (cast.lastPlayedDate) {
-    image = [[UIImage imageNamed:@"played"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-  } else if (cast.bookmarkTime) {
-    image = [[UIImage imageNamed:@"partplayed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    image = [UIImage imageNamed:@"played"];
   } else {
-    image = [[UIImage imageNamed:@"unplayed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    if (cast.playbackDuration) {
+      image = PieGraph(cast.bookmarkTime / cast.playbackDuration, cell.imageSize.width, 2);
+    } else {
+      image = PieGraphDontKnow(cell.imageSize.width, 2);
+    }
   }
+  image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
   cell.imageView.image = image;
 
-  MPMediaItemArtwork *artwork = [cast valueForProperty: MPMediaItemPropertyArtwork];
-  cell.bottomIconView.image = [artwork imageWithSize:cell.imageSize];
+  MPMediaItemArtwork *artwork = cast.artwork;
+  UIImage *artworkImage = [artwork imageWithSize:cell.imageSize];
+  if (artworkImage && [albumTitle length]) {
+    [_albumImageCache setObject:artworkImage forKey:albumTitle];
+  } else if (nil == artworkImage && [albumTitle length]) {
+    artworkImage = _albumImageCache[albumTitle];
+  }
+  cell.bottomIconView.image = artworkImage;
   
   return cell;
 }

@@ -70,3 +70,62 @@ NSString *NumericDurationString(NSTimeInterval duration) {
   return result;
 }
 
+// Common code. draw the outer circle.
+static CGContextRef PieFrame(CGFloat dimension, CGFloat strokeWidth) {
+  CGRect r = CGRectMake(0, 0, dimension, dimension);
+  CGFloat scale = [[UIScreen mainScreen] scale];
+  UIGraphicsBeginImageContextWithOptions(r.size, NO, scale);
+  [[UIColor clearColor] set];
+  UIRectFill(r);
+  [[UIColor blackColor] set];
+  CGContextRef c = UIGraphicsGetCurrentContext();
+  if (strokeWidth) {
+    r = CGRectInset(r, strokeWidth, strokeWidth);
+    CGContextSetLineWidth(c, strokeWidth);
+    CGContextStrokeEllipseInRect(c, r);
+  }
+  return c;
+}
+
+UIImage *PieGraph(CGFloat amount, CGFloat dimension, CGFloat strokeWidth) {
+  CGContextRef c = PieFrame(dimension, strokeWidth);
+  CGRect r = CGRectMake(0, 0, dimension, dimension);
+  r = CGRectInset(r, strokeWidth, strokeWidth);
+  if (amount <= 0.0) {
+    // done.
+  } else if (1.0 <= amount) {
+    CGContextFillEllipseInRect(c, r);
+  } else {
+    CGPoint center = r.origin;
+    CGFloat radius = r.size.width/2;;
+    center.x += radius;
+    center.y += radius;
+    CGFloat startAngle = (CGFloat)(-90.0 * 2*M_PI/360.0);
+    CGFloat endAngle = startAngle + (CGFloat)(amount * 2*M_PI);
+    CGContextBeginPath(c);
+    CGContextMoveToPoint(c, center.x, center.y);
+    CGContextAddArc(c, center.x, center.y, radius, startAngle, endAngle, NO);
+    CGContextAddLineToPoint(c, center.x, center.y);
+    CGContextClosePath(c);
+    CGContextFillPath(c);
+  }
+  UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  return result;
+}
+
+UIImage *PieGraphDontKnow(CGFloat dimension, CGFloat strokeWidth) {
+  CGContextRef c = PieFrame(dimension, strokeWidth);
+  CGRect r = CGRectMake(0, 0, dimension, dimension);
+  r = CGRectInset(r, strokeWidth, strokeWidth);
+  CGContextBeginPath(c);
+  CGContextMoveToPoint(c, r.origin.x, r.origin.y + r.size.height/2);
+  CGContextAddLineToPoint(c, r.origin.x + r.size.width, r.origin.y + r.size.height/2);
+  CGContextStrokePath(c);
+  UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  return result;
+}
+
+
+

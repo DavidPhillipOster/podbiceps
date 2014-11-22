@@ -15,7 +15,7 @@ enum {
 // Uncomment to enable the info podcast controller button on each tableview cell.
 //    [self setAccessoryType:UITableViewCellAccessoryDetailButton];
     self.textLabel.font = [UIFont boldSystemFontOfSize:20];
-    self.textLabel.numberOfLines = 3;
+    self.textLabel.numberOfLines = 2;
     self.bottomIconView = [[UIImageView alloc] init];
     [self.contentView addSubview:self.bottomIconView];
     [self.bottomIconView setContentMode:UIViewContentModeScaleAspectFill];
@@ -47,6 +47,8 @@ enum {
   
   self.imageView.frame = tl;
   self.bottomIconView.frame = bl;
+  // Disable vertical centering of the title.
+  tr.size.height = [self.textLabel sizeThatFits:tr.size].height;
   self.textLabel.frame = tr;
   self.detailTextLabel.frame = br;
 }
