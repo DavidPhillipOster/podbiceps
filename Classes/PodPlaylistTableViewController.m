@@ -17,6 +17,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface PodPlaylistTableViewController ()
+@property(nonatomic) MPMusicPlayerController *player;
 @property(nonatomic) MPMediaItem *currentlyPlaying;
 @property(nonatomic) NSMutableDictionary *mediaProperties;
 // Key is podcast 'album' name.
@@ -31,7 +32,28 @@
     _albumImageCache = [NSMutableDictionary dictionary];
     [self setTitle:NSLocalizedString(@"Playlist", 0)];
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(libraryDidChange) name:MPMediaLibraryDidChangeNotification object:nil];
+    MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
+    [nc addObserver:self
+           selector:@selector(libraryDidChange)
+               name:MPMediaLibraryDidChangeNotification
+             object:library];
+    [library beginGeneratingLibraryChangeNotifications];
+    if ([MPMusicPlayerController respondsToSelector:@selector(systemMusicPlayer)]) {
+      [self setPlayer:[MPMusicPlayerController systemMusicPlayer]];
+    } else {
+      [self setPlayer:[MPMusicPlayerController iPodMusicPlayer]];
+    }
+    [_player setShuffleMode: MPMusicShuffleModeOff];
+    [_player setRepeatMode: MPMusicRepeatModeNone];
+    [_player beginGeneratingPlaybackNotifications];
+    [nc addObserver:self
+           selector:@selector(playingItemDidChange:)
+               name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
+             object:_player];
+    [nc addObserver:self
+           selector:@selector(playbackStateChanged:)
+               name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
+             object:_player];
   }
   return self;
 }
@@ -39,6 +61,9 @@
 - (void)dealloc {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   [nc removeObserver:self];
+  MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
+  [library endGeneratingLibraryChangeNotifications];
+  [_player endGeneratingPlaybackNotifications];
 }
 
 - (void)viewDidLoad {
@@ -55,6 +80,7 @@
   [self.navigationItem setRightBarButtonItem:self.editButtonItem];
   [self libraryDidChange];
 }
+
 
 - (void)didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
@@ -92,6 +118,15 @@
     NSArray *indexPaths = [self.tableView indexPathsForVisibleRows];
     [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
   }
+}
+
+- (void)playingItemDidChange:(NSNotification *)notify {
+  [self setCurrentlyPlaying:[_player nowPlayingItem]];
+}
+
+- (void)playbackStateChanged:(NSNotification *)notify {
+  NSArray *indexPaths = [self.tableView indexPathsForVisibleRows];
+  [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
 }
 
 #pragma mark - Table view data source
@@ -144,7 +179,11 @@
   cell.detailTextLabel.text = [a componentsJoinedByString:@" "];
   UIImage *image = nil;
   if (_currentlyPlaying == cast) {
-    image = [UIImage imageNamed:@"playing"];
+    if (MPMusicPlaybackStatePlaying == [_player playbackState]) {
+      image = [UIImage imageNamed:@"playing"];
+    } else {
+      image = [UIImage imageNamed:@"paused"];
+    }
   } else if (cast.lastPlayedDate) {
     image = [UIImage imageNamed:@"played"];
   } else {
@@ -178,6 +217,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   PodPlayerViewController *player = [PodPlayerViewController sharedInstance];
+  [player setPlayer:_player];
   MPMediaItem *cast = [_casts objectAtIndex:indexPath.row];
   [self setCurrentlyPlaying:cast];
   [player setCasts:_casts];
@@ -203,7 +243,6 @@
 }
 
 - (void)libraryDidChange {
-//  MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
   MPMediaQuery *query = [MPMediaQuery podcastsQuery];
   MPMediaPropertyPredicate *predicate = [MPMediaPropertyPredicate
       predicateWithValue:@NO forProperty:MPMediaItemPropertyIsCloudItem];

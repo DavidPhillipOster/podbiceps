@@ -127,5 +127,23 @@ UIImage *PieGraphDontKnow(CGFloat dimension, CGFloat strokeWidth) {
   return result;
 }
 
+void PodLog(const char *s) {
+  if (s) {
+    static NSTimeInterval lastTime = 0;
+    if (0 == lastTime) {
+      lastTime = [NSDate timeIntervalSinceReferenceDate];
+    }
+    NSTimeInterval  now = [NSDate timeIntervalSinceReferenceDate];
+    NSString *docFolderPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *path = [docFolderPath stringByAppendingPathComponent:@"log.txt"];
+    FILE *file = fopen([path fileSystemRepresentation], "a");
+    if (file) {
+      fprintf(file, "%5.3f %s\n", now - lastTime, s);
+      fclose(file);
+    }
+    lastTime = now;
+  }
+}
+
 
 

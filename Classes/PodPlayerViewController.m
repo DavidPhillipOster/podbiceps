@@ -23,20 +23,12 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 
-#if 1
-//#define DLOG(...) printf("%s\n", [[NSString stringWithFormat: __VA_ARGS__] UTF8String])
-#define DLOG(...) NSLog(__VA_ARGS__)
-#else
-#define DLOG(...) do{}while(0)
-#endif
 
 NSString *const kDidFinishPlayingNotification = @"DidFinishPlayingNotification";
 
 static PodPlayerViewController *sPodPlayerViewController = nil;
 
 @interface PodPlayerViewController () <PodPlayerDelegate>
-@property(nonatomic) MPMusicPlayerController *player;
-@property(nonatomic) MPNowPlayingInfoCenter *nowPlayingInfo;
 @property(nonatomic) NSTimer *updateTimeSliderTimer;
 @property(nonatomic, getter=isPlaying) BOOL playing;
 @property(nonatomic, readonly) NSTimeInterval duration;
@@ -66,6 +58,7 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 }
 
 - (void)dealloc {
+  [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
   [_player endGeneratingPlaybackNotifications];
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   [nc removeObserver:self];
@@ -103,51 +96,66 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
   [self becomeFirstResponder];
+  [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver:self
+         selector:@selector(playingItemDidChange:)
+             name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
+           object:_player];
+  [nc addObserver:self
+         selector:@selector(playbackStateChanged:)
+             name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
+           object:_player];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
   [self setUpdateTimeSliderTimer:nil];
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc removeObserver:self name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:_player];
+  [nc removeObserver:self name:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:_player];
 }
 
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event {
-  switch (event.subtype) {
-  case UIEventSubtypeRemoteControlPlay:
-    DLOG(@"Play");
-    [self play:nil];
-    break;
-  case UIEventSubtypeRemoteControlPause:
-    DLOG(@"Pause");
-    [self pause:nil];
-    break;
-  case UIEventSubtypeRemoteControlNextTrack:
-    DLOG(@"NextTrack");
-    [self next:nil];
-    break;
-  case UIEventSubtypeRemoteControlPreviousTrack:
-    DLOG(@"PreviousTrack");
-    [self previous:nil];
-    break;
-  case UIEventSubtypeRemoteControlBeginSeekingBackward:
-    DLOG(@"BeginSeekingBack");
-    [self skipBack:nil];
-    break;
-  case UIEventSubtypeRemoteControlEndSeekingBackward:
-    DLOG(@"EndSeekingBack");
-    break;
-  case UIEventSubtypeRemoteControlBeginSeekingForward:
-    DLOG(@"BeginSeekingForward");
-    [self skipForward:nil];
-   break;
-  case UIEventSubtypeRemoteControlEndSeekingForward:
-    DLOG(@"EndSeekingForward");
-    break;
-  case UIEventSubtypeRemoteControlTogglePlayPause:
-    DLOG(@"TogglePlayPause");
-    break;
-  default:
-    DLOG(@"other");
-    break;
+  if (event.type == UIEventTypeRemoteControl) {
+    switch (event.subtype) {
+    case UIEventSubtypeRemoteControlPlay:
+      DLOG(@"Play");
+      [self play:nil];
+      break;
+    case UIEventSubtypeRemoteControlPause:
+      DLOG(@"Pause");
+      [self pause:nil];
+      break;
+    case UIEventSubtypeRemoteControlNextTrack:
+      DLOG(@"NextTrack");
+      [self next:nil];
+      break;
+    case UIEventSubtypeRemoteControlPreviousTrack:
+      DLOG(@"PreviousTrack");
+      [self previous:nil];
+      break;
+    case UIEventSubtypeRemoteControlBeginSeekingBackward:
+      DLOG(@"BeginSeekingBack");
+      [self skipBack:nil];
+      break;
+    case UIEventSubtypeRemoteControlEndSeekingBackward:
+      DLOG(@"EndSeekingBack");
+      break;
+    case UIEventSubtypeRemoteControlBeginSeekingForward:
+      DLOG(@"BeginSeekingForward");
+      [self skipForward:nil];
+     break;
+    case UIEventSubtypeRemoteControlEndSeekingForward:
+      DLOG(@"EndSeekingForward");
+      break;
+    case UIEventSubtypeRemoteControlTogglePlayPause:
+      DLOG(@"TogglePlayPause");
+      break;
+    default:
+      DLOG(@"other %d", event.subtype);
+      break;
+    }
   }
 }
 
@@ -167,30 +175,6 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 - (void)setCast:(MPMediaItem *)cast {
   if (_cast != cast) {
     _cast = cast;
-    if (_cast) {
-      if (nil == _player) {
-        if ([MPMusicPlayerController respondsToSelector:@selector(systemMusicPlayer)]) {
-          [self setPlayer:[MPMusicPlayerController systemMusicPlayer]];
-        } else {
-          [self setPlayer:[MPMusicPlayerController iPodMusicPlayer]];
-        }
-        [_player setShuffleMode: MPMusicShuffleModeOff];
-        [_player setRepeatMode: MPMusicRepeatModeNone];
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self
-               selector:@selector(playingItemDidChange:)
-                   name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
-                 object:_player];
-        [nc addObserver:self
-               selector:@selector(playbackStateChanged:)
-                   name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
-                 object:_player];
-        [_player beginGeneratingPlaybackNotifications];
-      }
-      if (nil == _nowPlayingInfo) {
-        [self setNowPlayingInfo:[MPNowPlayingInfoCenter defaultCenter]];
-      }
-    }
     [self playCast:_cast];
   }
 }
@@ -222,11 +206,11 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 
 
 - (void)playingItemDidChange:(NSNotification *)note {
-// TODO: write playingItemDidChange
+  [self setCast:_player.nowPlayingItem];
 }
 
 - (void)playbackStateChanged:(NSNotification *)note {
-// TODO: write playbackStateChanged
+  [self setPlaying:_player.playbackState == MPMusicPlaybackStatePlaying];
 }
 
 

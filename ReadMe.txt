@@ -18,17 +18,14 @@ See AddMusic in Downloads for more things to take care of to get this right.
 
 11/22/2014
 * show how much of a podcast has been played in the tableview.
-* sometimes, I don't get a duration. Currently, show an 'indeterminate' symbol for the pie chart.'
+* sometimes, I don't get a duration. Currently, show an 'indeterminate' symbol for the pie chart.
 * sometimes, I don't get artwork for some episodes. Cache artwork in RAM, and use that of another episode.
-* icons and startup screens
+* More work on receiving remoteEvents.
+* connect to library and player notifications.
 
 TODO -
-- notification handlers in player,
-- library notification handlers in tableview.
 - when the app starts and there's something already playing, then make sure the currently playing item is in the tableview.
 
 - my sort
 
 - Persistent 'stop' list. binary file? SQLite ?
-- cache album artwork in my app's persistent storage, so I'll have fallback artwork.
-- created 'amount played' icons at runtime (and cache them)

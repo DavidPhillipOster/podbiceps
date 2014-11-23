@@ -23,3 +23,12 @@ UIImage *PieGraph(CGFloat amount, CGFloat dimension, CGFloat strokeWidth);
 
 // Similar to above, but return a different symbol for when we don't know the amount.
 UIImage *PieGraphDontKnow(CGFloat dimension, CGFloat strokeWidth);
+
+#if 0
+void PodLog(const char *s);
+#define DLOG(...) PodLog([[NSString stringWithFormat: __VA_ARGS__] UTF8String])
+//#define DLOG(...) NSLog(__VA_ARGS__)
+#else
+#define DLOG(...) do{}while(0)
+#endif
+

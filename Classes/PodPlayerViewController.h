@@ -16,9 +16,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class MPMusicPlayerController;
 @class MPMediaItem;
 
 @interface PodPlayerViewController : UIViewController
+// creator MUST set this property.
+@property(nonatomic) MPMusicPlayerController *player;
 // list of podCasts
 @property(nonatomic) NSArray *casts;
 
