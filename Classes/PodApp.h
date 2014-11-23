@@ -1,4 +1,5 @@
-// podbiceps.pch
+//
+//  PodApp.h
 //  Created by David Phillip Oster, DavidPhillipOster+podbiceps@gmail.com on 11/19/14.
 //  Copyright (c) 2014 David Phillip Oster.
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +14,9 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import <UIKit/UIKit.h>
-#endif
+#import <UIKit/UIKit.h>
+
+// TODO: remove this once I've solved: Trying to discover why I'm not receiving remoteControlReceivedWithEvent but I'm not getting them.
+@interface PodApp : UIApplication
+
+@end

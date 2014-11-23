@@ -1,4 +1,3 @@
-//
 //  PodPlayerViewController.m
 //
 //  Created by David Phillip Oster, DavidPhillipOster+podbiceps@gmail.com on 11/19/14.
@@ -18,6 +17,7 @@
 
 #import "PodPlayerViewController.h"
 
+#import "PodPersistent.h"
 #import "PodPlayerView.h"
 #import "PodUtils.h"
 
@@ -182,6 +182,7 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 - (void)playCast:(MPMediaItem *)cast {
   _cast = cast;
   if (_cast) {
+    NSTimeInterval bookmarkTime = MAX(_cast.bookmarkTime, [[PodPersistent sharedInstance] bookmarkTimeOfMediaItem:_cast]);
     NSMutableAttributedString *s = [[NSMutableAttributedString alloc] init];
     [s appendAttributedString:AttrBold(_cast.title)];
     NSMutableArray *body = [NSMutableArray array];
@@ -198,7 +199,8 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
     [_player setNowPlayingItem:_cast];
     [_player play];
     playerView.timeSlider.maximumValue = _cast.playbackDuration;
-    playerView.timeSlider.value = _cast.bookmarkTime;
+    playerView.timeSlider.value = bookmarkTime;
+    [_player setCurrentPlaybackTime:bookmarkTime];
     [self play:nil];
     [self updateTimeSlider:nil];
   }
@@ -210,7 +212,16 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 }
 
 - (void)playbackStateChanged:(NSNotification *)note {
-  [self setPlaying:_player.playbackState == MPMusicPlaybackStatePlaying];
+  switch (_player.playbackState) {
+    case MPMusicPlaybackStatePlaying:
+      [self setPlaying:YES];
+      break;
+    case MPMusicPlaybackStatePaused:
+      [self setPlaying:NO];
+      break;
+    default:
+      break;
+  }
 }
 
 
@@ -257,6 +268,7 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
   playerView.timeUsed.text = NumericDurationString(readHead);
   playerView.timeToGo.text = NumericDurationString(readHead - self.duration);
   playerView.timeSlider.value = readHead;
+  [[PodPersistent sharedInstance] setBookmarkTime:readHead ofMediaItem:_cast];
 }
 
 - (void)setRate:(CGFloat)rate {

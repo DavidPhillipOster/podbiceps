@@ -40,6 +40,8 @@
 		6338AC1E1A19A5A800166042 /* skipBack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6338AC161A19A5A800166042 /* skipBack@2x.png */; };
 		637FDFDA1A210FF1005CE6E1 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 637FDFD91A210FF0005CE6E1 /* Default-568h@2x.png */; };
 		637FDFDC1A211075005CE6E1 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 637FDFDB1A211075005CE6E1 /* Default@2x.png */; };
+		6393E90C1A21A393002B350B /* PodApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6393E90B1A21A393002B350B /* PodApp.m */; };
+		6393E90F1A21A759002B350B /* PodPersistent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6393E90E1A21A759002B350B /* PodPersistent.m */; };
 		63AE9D4E1A218B98005E3DF5 /* paused.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE9D4C1A218B98005E3DF5 /* paused.png */; };
 		63AE9D4F1A218B98005E3DF5 /* paused@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE9D4D1A218B98005E3DF5 /* paused@2x.png */; };
 		63D713401A2107A400DABDD6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D7133F1A2107A400DABDD6 /* Images.xcassets */; };
@@ -94,6 +96,10 @@
 		637FDFD91A210FF0005CE6E1 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		637FDFDB1A211075005CE6E1 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		6388AC4B19D7557400644261 /* ReadMe.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
+		6393E90A1A21A393002B350B /* PodApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodApp.h; sourceTree = "<group>"; };
+		6393E90B1A21A393002B350B /* PodApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodApp.m; sourceTree = "<group>"; };
+		6393E90D1A21A759002B350B /* PodPersistent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodPersistent.h; sourceTree = "<group>"; };
+		6393E90E1A21A759002B350B /* PodPersistent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodPersistent.m; sourceTree = "<group>"; };
 		63AE9D4C1A218B98005E3DF5 /* paused.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paused.png; sourceTree = "<group>"; };
 		63AE9D4D1A218B98005E3DF5 /* paused@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paused@2x.png"; sourceTree = "<group>"; };
 		63D7133F1A2107A400DABDD6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = podbiceps/Images.xcassets; sourceTree = SOURCE_ROOT; };
@@ -122,8 +128,12 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6393E90A1A21A393002B350B /* PodApp.h */,
+				6393E90B1A21A393002B350B /* PodApp.m */,
 				1D3623240D0F684500981E51 /* PodAppDelegate.h */,
 				1D3623250D0F684500981E51 /* PodAppDelegate.m */,
+				6393E90D1A21A759002B350B /* PodPersistent.h */,
+				6393E90E1A21A759002B350B /* PodPersistent.m */,
 				6338ABFE1A184B2000166042 /* PodcastInfoViewController.h */,
 				6338ABFF1A184B2000166042 /* PodcastInfoViewController.m */,
 				6338ABF11A1828A000166042 /* PodPlayerView.h */,
@@ -311,6 +321,7 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				6338ABEE1A18135800166042 /* PodSettingsTableViewController.m in Sources */,
+				6393E90F1A21A759002B350B /* PodPersistent.m in Sources */,
 				6338AC0E1A19839200166042 /* PodUtils.m in Sources */,
 				1D3623260D0F684500981E51 /* PodAppDelegate.m in Sources */,
 				6338ABEB1A18132000166042 /* PodPlaylistTableViewController.m in Sources */,
@@ -318,6 +329,7 @@
 				6338AC0B1A19577F00166042 /* PodPlaylistTableViewCell.m in Sources */,
 				28D7ACF80DDB3853001CB0EB /* PodPlayerViewController.m in Sources */,
 				6338ABF31A1828A000166042 /* PodPlayerView.m in Sources */,
+				6393E90C1A21A393002B350B /* PodApp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

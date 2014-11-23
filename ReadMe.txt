@@ -22,6 +22,8 @@ See AddMusic in Downloads for more things to take care of to get this right.
 * sometimes, I don't get artwork for some episodes. Cache artwork in RAM, and use that of another episode.
 * More work on receiving remoteEvents.
 * connect to library and player notifications.
+11/23/2014
+* persistent order, bookmark times.
 
 TODO -
 - when the app starts and there's something already playing, then make sure the currently playing item is in the tableview.
@@ -29,3 +31,4 @@ TODO -
 - my sort
 
 - Persistent 'stop' list. binary file? SQLite ?
+- current item should be a superpositon of pie chart and 'speaker'

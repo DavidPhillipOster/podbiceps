@@ -1,5 +1,4 @@
-//
-//  StarteAppDelegate.m
+//  PodAppDelegate.m
 //
 //  Created by David Phillip Oster, DavidPhillipOster+podbiceps@gmail.com on 11/19/14.
 //  Copyright (c) 2014 David Phillip Oster.
@@ -17,12 +16,16 @@
 
 
 #import "PodAppDelegate.h"
+
+#import "PodPersistent.h"
 #import "PodPlaylistTableViewController.h"
 #import "PodPlayerViewController.h"
+#import "PodUtils.h"
 
 @implementation PodAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  DLOG(@"didFinishLaunching");
   CGRect bounds = [[UIScreen mainScreen] bounds];
   [self setWindow:[[UIWindow alloc] initWithFrame:bounds]];
   [self setPlaylistController:[[PodPlaylistTableViewController alloc] init]];
@@ -37,6 +40,7 @@
  Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
  */
 - (void)applicationWillResignActive:(UIApplication *)application {
+  DLOG(@"willResignActive");
 }
 
 
@@ -44,18 +48,21 @@
  If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
  */
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-}
+  DLOG(@"enterBackground");
+ }
 
 
 /* Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
  */
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+  DLOG(@"enterForeground");
 }
 
 
 /* Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
  */
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+  DLOG(@"didBecomeActive");
 }
 
 
@@ -63,6 +70,7 @@
  See also applicationDidEnterBackground:.
  */
 - (void)applicationWillTerminate:(UIApplication *)application {
+  DLOG(@"willTerminate");
 }
 
 
@@ -71,6 +79,7 @@
 /* Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
  */
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+  DLOG(@"MemoryWarning");
 }
 
 
