@@ -47,6 +47,7 @@
 		63D713401A2107A400DABDD6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D7133F1A2107A400DABDD6 /* Images.xcassets */; };
 		63D713421A21080700DABDD6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63D713411A21080700DABDD6 /* LaunchScreen.xib */; };
 		63D713441A2109F000DABDD6 /* 320@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D713431A2109F000DABDD6 /* 320@2x.png */; };
+		63EBC0831A22F0760096E54F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63EBC0821A22F0760096E54F /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +107,7 @@
 		63D713411A21080700DABDD6 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		63D713431A2109F000DABDD6 /* 320@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "320@2x.png"; sourceTree = "<group>"; };
 		63DC67ED1336AC5D00B4B67E /* Pod-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Pod-Info.plist"; sourceTree = "<group>"; };
+		63EBC0821A22F0760096E54F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63EBC0831A22F0760096E54F /* AVFoundation.framework in Frameworks */,
 				6338ABDD1A18111B00166042 /* AudioToolbox.framework in Frameworks */,
 				6338ABDF1A18111B00166042 /* CoreBluetooth.framework in Frameworks */,
 				6338ABE21A18111B00166042 /* MediaPlayer.framework in Frameworks */,
@@ -187,6 +190,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63EBC0821A22F0760096E54F /* AVFoundation.framework */,
 				6338ABD51A18111B00166042 /* AudioToolbox.framework */,
 				6338ABD71A18111B00166042 /* CoreBluetooth.framework */,
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,

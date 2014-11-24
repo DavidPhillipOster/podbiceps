@@ -58,6 +58,7 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 }
 
 - (void)dealloc {
+  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updatePlayState) object:nil];
   [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
   [_player endGeneratingPlaybackNotifications];
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -211,7 +212,13 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
   [self setCast:_player.nowPlayingItem];
 }
 
+// Defer here so that if there are multiple queued up, only the last one will win.
 - (void)playbackStateChanged:(NSNotification *)note {
+  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updatePlayState) object:nil];
+  [self performSelector:@selector(updatePlayState) withObject:nil afterDelay:0.05];
+}
+
+- (void)updatePlayState {
   switch (_player.playbackState) {
     case MPMusicPlaybackStatePlaying:
       [self setPlaying:YES];
@@ -274,7 +281,7 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 - (void)setRate:(CGFloat)rate {
   if (_rate != rate) {
     _rate = rate;
-// TODO
+    [_player setCurrentPlaybackRate:rate];
   }
 }
 

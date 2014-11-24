@@ -241,6 +241,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
   if (editingStyle == UITableViewCellEditingStyleDelete) {
+    MPMediaItem *deletedItem = [_casts objectAtIndex:indexPath.row];
+    [_persistentOrder deleteItem:deletedItem];
     [_casts removeObjectAtIndex:indexPath.row];
     PodPlayerViewController *player = [PodPlayerViewController sharedInstance];
     [player setCasts:_casts];
@@ -265,6 +267,8 @@
   for (int i = ((int)[unplayed count]) - 1; 0 <= i; --i) {
     MPMediaItem *cast = [unplayed objectAtIndex:i];
     if (cast.lastPlayedDate) {
+      [unplayed removeObjectAtIndex:i];
+    } else if ([_persistentOrder isDeletedItem:cast]) {
       [unplayed removeObjectAtIndex:i];
     }
   }

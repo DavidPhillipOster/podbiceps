@@ -27,6 +27,10 @@
 // NSNotFound if we don't know.
 - (NSUInteger)indexOrderOfMediaItem:(MPMediaItem *)mediaItem;
 
+// put item on a permanent stoplist.
+- (void)deleteItem:(MPMediaItem *)mediaItem;
+- (BOOL)isDeletedItem:(MPMediaItem *)mediaItem;
+
 // 0 if unknown.
 - (NSTimeInterval)bookmarkTimeOfMediaItem:(MPMediaItem *)mediaItem;
 - (BOOL)hasBookmarkTimeOfMediaItem:(MPMediaItem *)mediaItem;

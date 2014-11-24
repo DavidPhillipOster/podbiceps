@@ -23,8 +23,10 @@ static NSString *const kBookmarkKey = @"mk";
 static PodPersistent *sPodPersistent = nil;
 
 @interface PodPersistent()
+@property(nonatomic) NSMutableArray *deletedItems;
 @property(nonatomic) NSMutableArray *podItems;
-@property(nonatomic) BOOL isSynchronized;
+@property(nonatomic) BOOL isDeletedSynchronized;
+@property(nonatomic) BOOL isOrderSynchronized;
 @end
 
 @implementation PodPersistent
@@ -42,12 +44,21 @@ static PodPersistent *sPodPersistent = nil;
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     UIApplication *app = [UIApplication sharedApplication];
     [nc addObserver:self selector:@selector(synchronize) name:UIApplicationDidEnterBackgroundNotification object:app];
-    NSMutableArray *order = [NSMutableArray arrayWithContentsOfURL:[self loadURL]];
-    _isSynchronized = YES;
+
+    NSMutableArray *order = [NSMutableArray arrayWithContentsOfURL:[self orderURL]];
+    _isOrderSynchronized = YES;
     if (order) {
       _podItems = order;
     } else {
       _podItems = [NSMutableArray array];
+    }
+
+    NSMutableArray *deleted = [NSMutableArray arrayWithContentsOfURL:[self deletedURL]];
+    _isDeletedSynchronized = YES;
+    if (deleted) {
+      _deletedItems = deleted;
+    } else {
+      _deletedItems = [NSMutableArray array];
     }
   }
   return self;
@@ -71,7 +82,7 @@ static PodPersistent *sPodPersistent = nil;
   }
   if (![newOrder isEqual:_podItems]) {
     _podItems = newOrder;
-    _isSynchronized = NO;
+    _isOrderSynchronized = NO;
   }
 }
 
@@ -129,35 +140,70 @@ static PodPersistent *sPodPersistent = nil;
   if (NSNotFound == index) {
     index = [_podItems count];
     [_podItems addObject:newDict];
-    _isSynchronized = NO;
+    _isOrderSynchronized = NO;
   } else {
     NSDictionary *oldDict = [_podItems objectAtIndex:index];
     if (![newDict isEqual:oldDict]) {
       [_podItems replaceObjectAtIndex:index withObject:newDict];
-      _isSynchronized = NO;
+      _isOrderSynchronized = NO;
     }
   }
 }
 
 
 - (void)synchronize {
-  if (!_isSynchronized) {
-    [_podItems writeToURL:[self loadURL] atomically:YES];
-    _isSynchronized = YES;
+  if (!_isOrderSynchronized) {
+    [_podItems writeToURL:[self orderURL] atomically:YES];
+    _isOrderSynchronized = YES;
+  }
+  if (!_isDeletedSynchronized) {
+    [_deletedItems writeToURL:[self deletedURL] atomically:YES];
+    _isDeletedSynchronized = YES;
   }
 }
 
-- (NSURL *)loadURL {
-  NSURL *result = nil;
+- (NSString *)dataFolderPath {
   NSString *rootFolderPath = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject];
   NSString *folderPath = [rootFolderPath stringByAppendingPathComponent:@"podbicepsorder"];
   NSFileManager *fm = [NSFileManager defaultManager];
   [fm createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:NULL];
+  return folderPath;
+}
+
+- (NSURL *)orderURL {
+  NSURL *result = nil;
+  NSString *folderPath = [self dataFolderPath];
   NSString *loadPath = [folderPath stringByAppendingPathComponent:@"order.plist"];
   if ([loadPath length]) {
     result = [NSURL fileURLWithPath:loadPath];
   }
   return result;
 }
+
+- (NSURL *)deletedURL {
+  NSURL *result = nil;
+  NSString *folderPath = [self dataFolderPath];
+  NSString *loadPath = [folderPath stringByAppendingPathComponent:@"deleted.plist"];
+  if ([loadPath length]) {
+    result = [NSURL fileURLWithPath:loadPath];
+  }
+  return result;
+}
+
+- (BOOL)isDeletedItem:(MPMediaItem *)item {
+  MPMediaEntityPersistentID persistentID = [item persistentID];
+  NSNumber *n = [NSNumber numberWithLongLong:persistentID];
+  return [_deletedItems containsObject:n];
+}
+
+- (void)deleteItem:(MPMediaItem *)item {
+  MPMediaEntityPersistentID persistentID = [item persistentID];
+  NSNumber *n = [NSNumber numberWithLongLong:persistentID];
+  if (n && ![_deletedItems containsObject:n]) {
+    [_deletedItems addObject:n];
+    _isDeletedSynchronized = NO;
+  }
+}
+
 
 @end

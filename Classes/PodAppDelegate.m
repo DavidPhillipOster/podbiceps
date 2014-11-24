@@ -22,10 +22,13 @@
 #import "PodPlayerViewController.h"
 #import "PodUtils.h"
 
+#import <AVFoundation/AVFoundation.h>
+
 @implementation PodAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   DLOG(@"didFinishLaunching");
+  [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
   CGRect bounds = [[UIScreen mainScreen] bounds];
   [self setWindow:[[UIWindow alloc] initWithFrame:bounds]];
   [self setPlaylistController:[[PodPlaylistTableViewController alloc] init]];

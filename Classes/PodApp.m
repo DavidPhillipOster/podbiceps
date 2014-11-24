@@ -18,6 +18,15 @@
 
 @implementation PodApp
 
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    [self beginReceivingRemoteControlEvents];
+    [self becomeFirstResponder];
+  }
+  return self;
+}
+
 // This should never be called. Just for debugging.
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event {
   if (event.type == UIEventTypeRemoteControl) {

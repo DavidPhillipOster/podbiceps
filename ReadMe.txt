@@ -23,12 +23,13 @@ See AddMusic in Downloads for more things to take care of to get this right.
 * More work on receiving remoteEvents.
 * connect to library and player notifications.
 11/23/2014
-* persistent order, bookmark times.
+* persistent order, bookmark times, delete
 
 TODO -
+- cache artwork on disk? add to 'playing' screen? Comments?
+- undo manager. undo labels.
 - when the app starts and there's something already playing, then make sure the currently playing item is in the tableview.
 
 - my sort
 
-- Persistent 'stop' list. binary file? SQLite ?
 - current item should be a superpositon of pie chart and 'speaker'
