@@ -24,12 +24,27 @@ See AddMusic in Downloads for more things to take care of to get this right.
 * connect to library and player notifications.
 11/23/2014
 * persistent order, bookmark times, delete
+11/24/2014
+* Convert PodPersist's deleted from array to set in RAM, while leaving it an array on disk.
+11/30/2014
+* a MPMediaItem's url and podcast properties are useless.
+* Override UIApplication sendEvent to examine all events. Are any of the remoteControl events? No.
+* Keep track of which episodes I've played, when. (no U.I.)
 
 TODO -
-- cache artwork on disk? add to 'playing' screen? Comments?
+- cache artwork on disk? add to 'playing' screen?
 - undo manager. undo labels.
 - when the app starts and there's something already playing, then make sure the currently playing item is in the tableview.
+- Keep track of which episodes I've played, when. (U.I.)
 
 - my sort
 
 - current item should be a superpositon of pie chart and 'speaker'
+- bug: After turning editing off, I saw a cell with editing still on. After re-ordering, there was a blank cell.
+
+
+
+LESSONS LEARNED - 
+You can't write a dictionary to disk if the keys are numbers, because the plist format only supports string keys.
+
+Still can't figure out how to get RemoteControlPlay etc. events.

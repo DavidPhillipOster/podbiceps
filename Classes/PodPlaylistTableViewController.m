@@ -157,30 +157,30 @@
   NSString *dateString = HumanReadableDate(cast.releaseDate);
   NSString *durationString = HumanReadableDuration(cast.playbackDuration);
   NSMutableArray *a = [NSMutableArray array];
-  NSString *albumTitle = cast.podcastTitle;
-  if (albumTitle) {
-    NSRange r = [albumTitle rangeOfString:@"Naked Scientists"];
+  NSString *podcastTitle = cast.podcastTitle;
+  if (podcastTitle) {
+    NSRange r = [podcastTitle rangeOfString:@"Naked Scientists"];
     if (r.location != NSNotFound) {
-      albumTitle = @"Naked Scientists";
+      podcastTitle = @"Naked Scientists";
       static NSRegularExpression *re = nil;
       if (nil == re) {
         re = [NSRegularExpression regularExpressionWithPattern:@"Naked Scientists.+[0-9]+\\.[0-9]+\\.[0-9]+ .." options:0 error:NULL];
       }
       title = [re stringByReplacingMatchesInString:title options:0 range:NSMakeRange(0, [title length]) withTemplate:@""];
     }
-    r = [albumTitle rangeOfString:@"(audio)"];
+    r = [podcastTitle rangeOfString:@"(audio)"];
     if (r.location != NSNotFound) {
-      albumTitle = [albumTitle stringByReplacingCharactersInRange:r withString:@""];
+      podcastTitle = [podcastTitle stringByReplacingCharactersInRange:r withString:@""];
     }
-    r = [albumTitle rangeOfString:@"NPR: "];
+    r = [podcastTitle rangeOfString:@"NPR: "];
     if (r.location != NSNotFound) {
-      albumTitle = [albumTitle stringByReplacingCharactersInRange:r withString:@""];
+      podcastTitle = [podcastTitle stringByReplacingCharactersInRange:r withString:@""];
     }
-    r = [albumTitle rangeOfString:@"APM: "];
+    r = [podcastTitle rangeOfString:@"APM: "];
     if (r.location != NSNotFound) {
-      albumTitle = [albumTitle stringByReplacingCharactersInRange:r withString:@""];
+      podcastTitle = [podcastTitle stringByReplacingCharactersInRange:r withString:@""];
     }
-    [a addObject:albumTitle];
+    [a addObject:podcastTitle];
   }
   if (dateString) {
     [a addObject:dateString];
@@ -212,13 +212,15 @@
 
   MPMediaItemArtwork *artwork = cast.artwork;
   UIImage *artworkImage = [artwork imageWithSize:cell.imageSize];
-  if (artworkImage && [albumTitle length]) {
-    [_albumImageCache setObject:artworkImage forKey:albumTitle];
-  } else if (nil == artworkImage && [albumTitle length]) {
-    artworkImage = _albumImageCache[albumTitle];
+  if (artworkImage && [podcastTitle length]) {
+    [_albumImageCache setObject:artworkImage forKey:podcastTitle];
+  } else if (nil == artworkImage && [podcastTitle length]) {
+    artworkImage = _albumImageCache[podcastTitle];
   }
   cell.bottomIconView.image = artworkImage;
-  
+  // artist and albumArtist are the same, and not very useful.
+  // assetURL is just, for example: ipod-library://item/item.mp3?id=1244920794833300476
+  // lyrics, genre are empty
   return cell;
 }
 
@@ -239,7 +241,10 @@
   [self.navigationController pushViewController:player animated:YES];
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+ forRowAtIndexPath:(NSIndexPath *)indexPath {
+
   if (editingStyle == UITableViewCellEditingStyleDelete) {
     MPMediaItem *deletedItem = [_casts objectAtIndex:indexPath.row];
     [_persistentOrder deleteItem:deletedItem];
@@ -267,6 +272,7 @@
   for (int i = ((int)[unplayed count]) - 1; 0 <= i; --i) {
     MPMediaItem *cast = [unplayed objectAtIndex:i];
     if (cast.lastPlayedDate) {
+      [[PodPersistent sharedInstance] deleteItem:cast];
       [unplayed removeObjectAtIndex:i];
     } else if ([_persistentOrder isDeletedItem:cast]) {
       [unplayed removeObjectAtIndex:i];

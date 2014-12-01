@@ -154,7 +154,7 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
       DLOG(@"TogglePlayPause");
       break;
     default:
-      DLOG(@"other %d", event.subtype);
+      DLOG(@"other %d", (int)event.subtype);
       break;
     }
   }

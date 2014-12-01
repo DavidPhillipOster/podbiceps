@@ -23,9 +23,9 @@ static NSString *const kBookmarkKey = @"mk";
 static PodPersistent *sPodPersistent = nil;
 
 @interface PodPersistent()
-@property(nonatomic) NSMutableArray *deletedItems;
+@property(nonatomic) NSMutableDictionary *deletedDetails;
 @property(nonatomic) NSMutableArray *podItems;
-@property(nonatomic) BOOL isDeletedSynchronized;
+@property(nonatomic) BOOL isDeletedDetailsSynchronized;
 @property(nonatomic) BOOL isOrderSynchronized;
 @end
 
@@ -52,14 +52,12 @@ static PodPersistent *sPodPersistent = nil;
     } else {
       _podItems = [NSMutableArray array];
     }
-
-    NSMutableArray *deleted = [NSMutableArray arrayWithContentsOfURL:[self deletedURL]];
-    _isDeletedSynchronized = YES;
-    if (deleted) {
-      _deletedItems = deleted;
-    } else {
-      _deletedItems = [NSMutableArray array];
+  
+    _deletedDetails = [NSMutableDictionary dictionaryWithContentsOfURL:[self deletedDetailsURL]];
+    if (nil == _deletedDetails) {
+      _deletedDetails = [NSMutableDictionary dictionary];
     }
+    _isDeletedDetailsSynchronized = YES;
   }
   return self;
 }
@@ -138,7 +136,6 @@ static PodPersistent *sPodPersistent = nil;
   NSMutableDictionary *newDict = [self itemAsDict:mediaItem];
   newDict[kBookmarkKey] = [NSNumber numberWithDouble:time];
   if (NSNotFound == index) {
-    index = [_podItems count];
     [_podItems addObject:newDict];
     _isOrderSynchronized = NO;
   } else {
@@ -156,9 +153,9 @@ static PodPersistent *sPodPersistent = nil;
     [_podItems writeToURL:[self orderURL] atomically:YES];
     _isOrderSynchronized = YES;
   }
-  if (!_isDeletedSynchronized) {
-    [_deletedItems writeToURL:[self deletedURL] atomically:YES];
-    _isDeletedSynchronized = YES;
+  if (!_isDeletedDetailsSynchronized) {
+    [_deletedDetails writeToURL:[self deletedDetailsURL] atomically:YES];
+    _isDeletedDetailsSynchronized = YES;
   }
 }
 
@@ -170,38 +167,57 @@ static PodPersistent *sPodPersistent = nil;
   return folderPath;
 }
 
-- (NSURL *)orderURL {
+- (NSURL *)urlOfFile:(NSString *)file {
   NSURL *result = nil;
   NSString *folderPath = [self dataFolderPath];
-  NSString *loadPath = [folderPath stringByAppendingPathComponent:@"order.plist"];
+  NSString *loadPath = [folderPath stringByAppendingPathComponent:file];
   if ([loadPath length]) {
     result = [NSURL fileURLWithPath:loadPath];
   }
   return result;
 }
 
-- (NSURL *)deletedURL {
-  NSURL *result = nil;
-  NSString *folderPath = [self dataFolderPath];
-  NSString *loadPath = [folderPath stringByAppendingPathComponent:@"deleted.plist"];
-  if ([loadPath length]) {
-    result = [NSURL fileURLWithPath:loadPath];
-  }
-  return result;
+- (NSURL *)orderURL {
+  return [self urlOfFile:@"order.plist"];
+}
+
+- (NSURL *)deletedDetailsURL {
+  return [self urlOfFile:@"deletedDetails.plist"];
 }
 
 - (BOOL)isDeletedItem:(MPMediaItem *)item {
   MPMediaEntityPersistentID persistentID = [item persistentID];
   NSNumber *n = [NSNumber numberWithLongLong:persistentID];
-  return [_deletedItems containsObject:n];
+  NSString *s = nil;
+  if (n) {
+    s = [NSString stringWithFormat:@"%@", n];
+  }
+  return nil != [_deletedDetails objectForKey:s];
 }
 
 - (void)deleteItem:(MPMediaItem *)item {
   MPMediaEntityPersistentID persistentID = [item persistentID];
   NSNumber *n = [NSNumber numberWithLongLong:persistentID];
-  if (n && ![_deletedItems containsObject:n]) {
-    [_deletedItems addObject:n];
-    _isDeletedSynchronized = NO;
+  NSString *key = nil;
+  if (n) {
+    key = [NSString stringWithFormat:@"%@", n];
+  }
+  if (n && nil == [_deletedDetails objectForKey:key]) {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSString *title = [item title];
+    if ([title length]) {
+      [dict setObject:title forKey:@"title"];
+    }
+    NSDate *date = [item lastPlayedDate];
+    if (date) {
+      [dict setObject:date forKey:@"played"];
+    }
+    NSString *podcastTitle = [item podcastTitle];
+    if ([podcastTitle length]) {
+      [dict setObject:podcastTitle forKey:@"podcast"];
+    }
+    [_deletedDetails setObject:dict forKey:key];
+    _isDeletedDetailsSynchronized = NO;
   }
 }
 

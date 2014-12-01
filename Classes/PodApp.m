@@ -27,7 +27,17 @@
   return self;
 }
 
+- (void)sendEvent:(UIEvent *)event {
+  if (event.type == UIEventTypeRemoteControl) {
+    // 11/30/2014 experiments show we never get here.
+    DLOG(@"sendEvent:%d", (int)event.subtype);
+  }
+  [super sendEvent:event];
+}
+
+
 // This should never be called. Just for debugging.
+// 11/30/2014 experiments show it's never called.
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event {
   if (event.type == UIEventTypeRemoteControl) {
     switch (event.subtype) {
@@ -58,7 +68,7 @@
       DLOG(@"App TogglePlayPause");
       break;
     default:
-      DLOG(@"App other %d", event.subtype);
+      DLOG(@"App other %d", (int)event.subtype);
       break;
     }
   }
