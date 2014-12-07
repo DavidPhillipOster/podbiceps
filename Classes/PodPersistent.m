@@ -33,7 +33,7 @@ static PodPersistent *sPodPersistent = nil;
 
 + (instancetype)sharedInstance {
   if (nil == sPodPersistent) {
-    sPodPersistent = [[PodPersistent alloc] init];
+    sPodPersistent = [[self alloc] init];
   }
   return sPodPersistent;
 }

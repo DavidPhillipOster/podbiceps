@@ -17,6 +17,7 @@
 
 #import "PodAppDelegate.h"
 
+#import "PodPeripheral.h"
 #import "PodPersistent.h"
 #import "PodPlaylistTableViewController.h"
 #import "PodPlayerViewController.h"
@@ -28,6 +29,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   DLOG(@"didFinishLaunching");
+  [PodPeripheral sharedInstance]; // Create instance so it can begin connecting early in our run.
   [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
   CGRect bounds = [[UIScreen mainScreen] bounds];
   [self setWindow:[[UIWindow alloc] initWithFrame:bounds]];

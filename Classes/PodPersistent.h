@@ -17,7 +17,7 @@
 
 @class MPMediaItem;
 
-// When the user re-orders the items save that order here
+// This object saves the user's item order in ApplicationSupport. Deleted items too.
 @interface PodPersistent : NSObject
 
 + (instancetype)sharedInstance;

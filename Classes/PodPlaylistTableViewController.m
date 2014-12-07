@@ -212,6 +212,12 @@
 
   MPMediaItemArtwork *artwork = cast.artwork;
   UIImage *artworkImage = [artwork imageWithSize:cell.imageSize];
+  if (nil == artworkImage) {
+    CGSize actualSize = cast.artwork.bounds.size;
+    if (0 < actualSize.width && 0 < actualSize.height) {
+      artworkImage = [artwork imageWithSize:actualSize];
+    }
+  }
   if (artworkImage && [podcastTitle length]) {
     [_albumImageCache setObject:artworkImage forKey:podcastTitle];
   } else if (nil == artworkImage && [podcastTitle length]) {

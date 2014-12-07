@@ -15,9 +15,37 @@
 
 #import "PodSettingsTableViewController.h"
 
-@interface PodSettingsTableViewController ()
+#import "PodPeripheral.h"
 
+@interface PodSettingsTableViewController ()
+- (void)myoSetup;
 @end
+
+@interface SettingsMyoTableViewCell : UITableViewCell
+@property(nonatomic, weak) PodSettingsTableViewController *owner;
+@end
+
+@implementation SettingsMyoTableViewCell
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier  {
+  self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+  if (self) {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = self.contentView.bounds;
+    [button setAutoresizingMask:0x3F];
+    [button setTitle:NSLocalizedString(@"Hardware setup", 0) forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(myoSetup) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:button];
+  }
+  return self;
+}
+
+- (void)myoSetup {
+  [_owner myoSetup];
+}
+@end
+
+
 
 @implementation PodSettingsTableViewController
 
@@ -44,6 +72,7 @@
   NSString *version = [NSString stringWithFormat:@"Version %@ (%@):\n by David Phillip Oster 11/2014",
       versionString, buildString];
   [footer setText:version];
+  [self.tableView registerClass:[SettingsMyoTableViewCell class] forCellReuseIdentifier:@"0"];
   
   // Uncomment the following line to preserve selection between presentations.
   // self.clearsSelectionOnViewWillAppear = NO;
@@ -57,21 +86,26 @@
   // Dispose of any resources that can be recreated.
 }
 
+- (void)myoSetup {
+  [[PodPeripheral sharedInstance] setupPushingOn:self.navigationController];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return 0;
+  return 1;
 }
 
-/*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
+  UITableViewCell *cell = nil;
+  NSString *key = [NSString stringWithFormat:@"%d", (int)indexPath.row];
+  if (0 == indexPath.row) {
+    SettingsMyoTableViewCell *myoCell =  (SettingsMyoTableViewCell *)[tableView dequeueReusableCellWithIdentifier:key forIndexPath:indexPath];
+    myoCell.owner = self;
+    cell = myoCell;
+  }
+  return cell;
 }
-*/
 
 /*
 // Override to support conditional editing of the table view.

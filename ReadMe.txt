@@ -30,9 +30,15 @@ See AddMusic in Downloads for more things to take care of to get this right.
 * a MPMediaItem's url and podcast properties are useless.
 * Override UIApplication sendEvent to examine all events. Are any of the remoteControl events? No.
 * Keep track of which episodes I've played, when. (no U.I.)
+12/06/2014
+* receiving core motion data.
+
+NEXT -
+peripheral logging
+peripheral graphing
+simply wiring it up and trying it.
 
 TODO -
-- cache artwork on disk? add to 'playing' screen?
 - undo manager. undo labels.
 - when the app starts and there's something already playing, then make sure the currently playing item is in the tableview.
 - Keep track of which episodes I've played, when. (U.I.)
@@ -41,6 +47,7 @@ TODO -
 
 - current item should be a superpositon of pie chart and 'speaker'
 - bug: After turning editing off, I saw a cell with editing still on. After re-ordering, there was a blank cell.
+- have a deleted items controller where the user can inspect, and possibly undelete items.
 
 
 
@@ -48,3 +55,6 @@ LESSONS LEARNED -
 You can't write a dictionary to disk if the keys are numbers, because the plist format only supports string keys.
 
 Still can't figure out how to get RemoteControlPlay etc. events.
+
+BUG -
+animatedImageWithImages is incompatible with templateMode.

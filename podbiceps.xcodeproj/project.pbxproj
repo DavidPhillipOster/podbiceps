@@ -13,6 +13,9 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		28D7ACF80DDB3853001CB0EB /* PodPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* PodPlayerViewController.m */; };
+		630575F61A34DAAD004DCC94 /* PodPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = 630575F51A34DAAD004DCC94 /* PodPeripheral.m */; };
+		630575F91A34DB03004DCC94 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630575F71A34DB03004DCC94 /* CoreMotion.framework */; };
+		630575FA1A34DB03004DCC94 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630575F81A34DB03004DCC94 /* GLKit.framework */; };
 		6338ABDD1A18111B00166042 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6338ABD51A18111B00166042 /* AudioToolbox.framework */; };
 		6338ABDF1A18111B00166042 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6338ABD71A18111B00166042 /* CoreBluetooth.framework */; };
 		6338ABE21A18111B00166042 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6338ABDA1A18111B00166042 /* MediaPlayer.framework */; };
@@ -47,6 +50,10 @@
 		63D713401A2107A400DABDD6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D7133F1A2107A400DABDD6 /* Images.xcassets */; };
 		63D713421A21080700DABDD6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63D713411A21080700DABDD6 /* LaunchScreen.xib */; };
 		63D713441A2109F000DABDD6 /* 320@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D713431A2109F000DABDD6 /* 320@2x.png */; };
+		63DBCB9D1A34DE9D009713E7 /* settings1.png in Resources */ = {isa = PBXBuildFile; fileRef = 63DBCB991A34DE9D009713E7 /* settings1.png */; };
+		63DBCB9E1A34DE9D009713E7 /* settings1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63DBCB9A1A34DE9D009713E7 /* settings1@2x.png */; };
+		63DBCB9F1A34DE9D009713E7 /* settings2.png in Resources */ = {isa = PBXBuildFile; fileRef = 63DBCB9B1A34DE9D009713E7 /* settings2.png */; };
+		63DBCBA01A34DE9D009713E7 /* settings2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63DBCB9C1A34DE9D009713E7 /* settings2@2x.png */; };
 		63EBC0831A22F0760096E54F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63EBC0821A22F0760096E54F /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +68,10 @@
 		28D7ACF70DDB3853001CB0EB /* PodPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodPlayerViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* podbiceps.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = podbiceps.pch; sourceTree = "<group>"; };
+		630575F41A34DAAD004DCC94 /* PodPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodPeripheral.h; sourceTree = "<group>"; };
+		630575F51A34DAAD004DCC94 /* PodPeripheral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodPeripheral.m; sourceTree = "<group>"; };
+		630575F71A34DB03004DCC94 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		630575F81A34DB03004DCC94 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		6338ABD51A18111B00166042 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		6338ABD71A18111B00166042 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		6338ABDA1A18111B00166042 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -106,6 +117,10 @@
 		63D7133F1A2107A400DABDD6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = podbiceps/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		63D713411A21080700DABDD6 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		63D713431A2109F000DABDD6 /* 320@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "320@2x.png"; sourceTree = "<group>"; };
+		63DBCB991A34DE9D009713E7 /* settings1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings1.png; sourceTree = "<group>"; };
+		63DBCB9A1A34DE9D009713E7 /* settings1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings1@2x.png"; sourceTree = "<group>"; };
+		63DBCB9B1A34DE9D009713E7 /* settings2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings2.png; sourceTree = "<group>"; };
+		63DBCB9C1A34DE9D009713E7 /* settings2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings2@2x.png"; sourceTree = "<group>"; };
 		63DC67ED1336AC5D00B4B67E /* Pod-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Pod-Info.plist"; sourceTree = "<group>"; };
 		63EBC0821A22F0760096E54F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -115,6 +130,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				630575F91A34DB03004DCC94 /* CoreMotion.framework in Frameworks */,
+				630575FA1A34DB03004DCC94 /* GLKit.framework in Frameworks */,
 				63EBC0831A22F0760096E54F /* AVFoundation.framework in Frameworks */,
 				6338ABDD1A18111B00166042 /* AudioToolbox.framework in Frameworks */,
 				6338ABDF1A18111B00166042 /* CoreBluetooth.framework in Frameworks */,
@@ -135,6 +152,8 @@
 				6393E90B1A21A393002B350B /* PodApp.m */,
 				1D3623240D0F684500981E51 /* PodAppDelegate.h */,
 				1D3623250D0F684500981E51 /* PodAppDelegate.m */,
+				630575F41A34DAAD004DCC94 /* PodPeripheral.h */,
+				630575F51A34DAAD004DCC94 /* PodPeripheral.m */,
 				6393E90D1A21A759002B350B /* PodPersistent.h */,
 				6393E90E1A21A759002B350B /* PodPersistent.m */,
 				6338ABFE1A184B2000166042 /* PodcastInfoViewController.h */,
@@ -190,6 +209,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				630575F71A34DB03004DCC94 /* CoreMotion.framework */,
+				630575F81A34DB03004DCC94 /* GLKit.framework */,
 				63EBC0821A22F0760096E54F /* AVFoundation.framework */,
 				6338ABD51A18111B00166042 /* AudioToolbox.framework */,
 				6338ABD71A18111B00166042 /* CoreBluetooth.framework */,
@@ -225,6 +246,10 @@
 				6338AC061A19542100166042 /* playing@2x.png */,
 				6338AC011A184FC600166042 /* settings.png */,
 				6338AC021A184FC600166042 /* settings@2x.png */,
+				63DBCB991A34DE9D009713E7 /* settings1.png */,
+				63DBCB9A1A34DE9D009713E7 /* settings1@2x.png */,
+				63DBCB9B1A34DE9D009713E7 /* settings2.png */,
+				63DBCB9C1A34DE9D009713E7 /* settings2@2x.png */,
 				6338AC111A19A5A800166042 /* skipBack.png */,
 				6338AC161A19A5A800166042 /* skipBack@2x.png */,
 				6338AC101A19A5A800166042 /* skipForward.png */,
@@ -291,6 +316,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6338AC1E1A19A5A800166042 /* skipBack@2x.png in Resources */,
+				63DBCBA01A34DE9D009713E7 /* settings2@2x.png in Resources */,
 				6338ABFD1A18465B00166042 /* play@2x.png in Resources */,
 				6338AC041A184FC600166042 /* settings@2x.png in Resources */,
 				6338AC171A19A5A800166042 /* gotoEnd.png in Resources */,
@@ -299,15 +325,18 @@
 				6338ABE61A1812AD00166042 /* Localizable.strings in Resources */,
 				6338AC1C1A19A5A800166042 /* gotoEnd@2x.png in Resources */,
 				6338AC081A19542200166042 /* playing@2x.png in Resources */,
+				63DBCB9E1A34DE9D009713E7 /* settings1@2x.png in Resources */,
 				6338AC191A19A5A800166042 /* skipBack.png in Resources */,
 				6338AC1D1A19A5A800166042 /* skipForward@2x.png in Resources */,
 				6338AC031A184FC600166042 /* settings.png in Resources */,
+				63DBCB9F1A34DE9D009713E7 /* settings2.png in Resources */,
 				63D713441A2109F000DABDD6 /* 320@2x.png in Resources */,
 				637FDFDC1A211075005CE6E1 /* Default@2x.png in Resources */,
 				6338AC1B1A19A5A800166042 /* gotoStart@2x.png in Resources */,
 				637FDFDA1A210FF1005CE6E1 /* Default-568h@2x.png in Resources */,
 				6338ABFC1A18465B00166042 /* play.png in Resources */,
 				63D713421A21080700DABDD6 /* LaunchScreen.xib in Resources */,
+				63DBCB9D1A34DE9D009713E7 /* settings1.png in Resources */,
 				63AE9D4E1A218B98005E3DF5 /* paused.png in Resources */,
 				63D713401A2107A400DABDD6 /* Images.xcassets in Resources */,
 				6338ABFA1A18465B00166042 /* pause.png in Resources */,
@@ -332,6 +361,7 @@
 				6338AC001A184B2000166042 /* PodcastInfoViewController.m in Sources */,
 				6338AC0B1A19577F00166042 /* PodPlaylistTableViewCell.m in Sources */,
 				28D7ACF80DDB3853001CB0EB /* PodPlayerViewController.m in Sources */,
+				630575F61A34DAAD004DCC94 /* PodPeripheral.m in Sources */,
 				6338ABF31A1828A000166042 /* PodPlayerView.m in Sources */,
 				6393E90C1A21A393002B350B /* PodApp.m in Sources */,
 			);

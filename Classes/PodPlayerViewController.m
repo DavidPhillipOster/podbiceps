@@ -41,7 +41,7 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 
 + (instancetype)sharedInstance {
   if (nil == sPodPlayerViewController) {
-    sPodPlayerViewController = [[PodPlayerViewController alloc] init];
+    sPodPlayerViewController = [[self alloc] init];
   }
   return sPodPlayerViewController;
 }
@@ -199,7 +199,15 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
     [_player setQueueWithItemCollection:collection];
     [_player setNowPlayingItem:_cast];
     [_player play];
-    playerView.timeSlider.maximumValue = _cast.playbackDuration;
+    // if the item has a duration use it. else guess.
+    if (_cast.playbackDuration) {
+      playerView.timeSlider.maximumValue = _cast.playbackDuration;
+    } else if (bookmarkTime) {
+      playerView.timeSlider.maximumValue = bookmarkTime*2;
+    } else {
+      // no data. guess one hour.
+      playerView.timeSlider.maximumValue = 60*60;
+    }
     playerView.timeSlider.value = bookmarkTime;
     [_player setCurrentPlaybackTime:bookmarkTime];
     [self play:nil];
