@@ -15,7 +15,9 @@
 
 #import "PodSettingsTableViewController.h"
 
+#import "PodAppDelegate.h"
 #import "PodPeripheral.h"
+#import "PodPlaylistTableViewController.h"
 
 @interface PodSettingsTableViewController ()
 - (void)myoSetup;
@@ -54,9 +56,25 @@
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
     [self setTitle:NSLocalizedString(@"Settings", 0)];
+    UIImage *settingsImage0 = [[UIImage imageNamed:@"settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIBarButtonItem *settingBarItem = [[UIBarButtonItem alloc] initWithImage:settingsImage0 style:UIBarButtonItemStylePlain target:nil action:NULL];
+    [self.navigationItem setBackBarButtonItem:settingBarItem];
+    NSString *playList = [NSString stringWithFormat:@"%@ >", NSLocalizedString(@"Playlist", 0)];
+    UIBarButtonItem *tableItem = [[UIBarButtonItem alloc] initWithTitle:playList style:UIBarButtonItemStylePlain target:self action:@selector(pushPlaylist:)];
+    [self.navigationItem setRightBarButtonItem:tableItem];
   }
   return self;
 }
+
+#if 0 // experiment with animated image. Not tinted.
+UIImage *settingsImage0 = [[UIImage imageNamed:@"settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//  UIImage *settingsImage1 = [[UIImage imageNamed:@"settings1"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//  UIImage *settingsImage2 = [[UIImage imageNamed:@"settings2"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//  UIImage *settingsImage = [UIImage animatedImageWithImages:@[settingsImage0, settingsImage1, settingsImage2, settingsImage1] duration:1.4];
+UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:settingsImage0
+                                                             style:UIBarButtonItemStylePlain target:self action:@selector(showSettings:)];
+
+#endif
 
 - (void)viewDidLoad {
   [super viewDidLoad];
@@ -90,6 +108,10 @@
   [[PodPeripheral sharedInstance] setupPushingOn:self.navigationController];
 }
 
+- (void)pushPlaylist:(id)sender {
+  PodAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+  [self.navigationController pushViewController:appDelegate.playlistController animated:YES];
+}
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

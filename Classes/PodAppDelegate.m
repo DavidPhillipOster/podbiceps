@@ -19,6 +19,7 @@
 
 #import "PodPeripheral.h"
 #import "PodPersistent.h"
+#import "PodSettingsTableViewController.h"
 #import "PodPlaylistTableViewController.h"
 #import "PodPlayerViewController.h"
 #import "PodUtils.h"
@@ -34,7 +35,9 @@
   CGRect bounds = [[UIScreen mainScreen] bounds];
   [self setWindow:[[UIWindow alloc] initWithFrame:bounds]];
   [self setPlaylistController:[[PodPlaylistTableViewController alloc] init]];
-  UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:_playlistController];
+  PodSettingsTableViewController *settingsController = [[PodSettingsTableViewController alloc] init];
+  UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settingsController];
+  [nav pushViewController:_playlistController animated:NO];
   [_window setRootViewController:nav];
   [_window makeKeyAndVisible];
   return YES;

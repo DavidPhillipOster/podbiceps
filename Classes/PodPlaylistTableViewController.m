@@ -18,7 +18,6 @@
 #import "PodcastInfoViewController.h"
 #import "PodPersistent.h"
 #import "PodPlayerViewController.h"
-#import "PodSettingsTableViewController.h"
 #import "PodUtils.h"
 
 #import "PodPlaylistTableViewCell.h"
@@ -81,12 +80,6 @@
   [self setMediaProperties:[NSMutableDictionary dictionary]];
   [self.tableView registerClass:[PodPlaylistTableViewCell class] forCellReuseIdentifier:@"cast"];
   [self.tableView setRowHeight:84];
-#if 0 // We don't have any settings yet. When we do, turn this back on.
-  UIImage *settingsImage = [[UIImage imageNamed:@"settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-  UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:settingsImage
-      style:UIBarButtonItemStylePlain target:self action:@selector(showSettings:)];
-  [self.navigationItem setLeftBarButtonItem:settings];
-#endif
   [self.navigationItem setRightBarButtonItem:self.editButtonItem];
   [self libraryDidChange];
 }
@@ -118,11 +111,6 @@
   MPMediaItemCollection *collection = [MPMediaItemCollection collectionWithItems:_casts];
   [_player setQueueWithItemCollection:collection];
 //  [delegate_ setNeedsUpdate];
-}
-
-- (void)showSettings:(id)sender {
-  PodSettingsTableViewController *settings = [[PodSettingsTableViewController alloc] init];
-  [self.navigationController pushViewController:settings animated:YES];
 }
 
 - (void)setCurrentlyPlaying:(MPMediaItem *)currentlyPlaying {
