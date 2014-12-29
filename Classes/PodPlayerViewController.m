@@ -298,7 +298,12 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 }
 
 - (void)setReadHead:(NSTimeInterval)readHead {
-  readHead = MAX(0.0, MIN(readHead, [self duration]));
+  NSTimeInterval duration = [self duration];
+  readHead = MAX(0.0, readHead);
+  // Some items falsely report 0 duration. Ignore those.
+  if (0.0 < duration) {
+    readHead = MIN(readHead, duration);
+  }
   if ([self readHead] != readHead) {
     [_player setCurrentPlaybackTime:readHead];
   }
