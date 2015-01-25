@@ -30,6 +30,8 @@
 @property(nonatomic) MPMusicPlayerController *player;
 @property(nonatomic) MPMediaItem *currentlyPlaying;
 @property(nonatomic) NSMutableDictionary *mediaProperties;
+@property(nonatomic) NSTimer *deferUpdate; // is non-nil, we're defering updates until it expires.
+@property(nonatomic) BOOL needsUpdating;  //setting to YES immediately updates, unless we're defered.
 @end
 
 @implementation PodPlaylistTableViewController
@@ -40,13 +42,6 @@
     _albumImageCache = [NSMutableDictionary dictionary];
     _persistentOrder = [PodPersistent sharedInstance];
     [self setTitle:NSLocalizedString(@"Playlist", 0)];
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
-    [nc addObserver:self
-           selector:@selector(libraryDidChange)
-               name:MPMediaLibraryDidChangeNotification
-             object:library];
-    [library beginGeneratingLibraryChangeNotifications];
     if ([MPMusicPlayerController respondsToSelector:@selector(systemMusicPlayer)]) {
       [self setPlayer:[MPMusicPlayerController systemMusicPlayer]];
     } else {
@@ -55,6 +50,13 @@
     [_player setShuffleMode: MPMusicShuffleModeOff];
     [_player setRepeatMode: MPMusicRepeatModeNone];
     [_player beginGeneratingPlaybackNotifications];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
+    [nc addObserver:self
+           selector:@selector(libraryDidChange)
+               name:MPMediaLibraryDidChangeNotification
+             object:library];
+    [library beginGeneratingLibraryChangeNotifications];
     [nc addObserver:self
            selector:@selector(playingItemDidChange:)
                name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
@@ -73,6 +75,7 @@
   MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
   [library endGeneratingLibraryChangeNotifications];
   [_player endGeneratingPlaybackNotifications];
+  [self setDeferUpdate:nil];
 }
 
 - (void)viewDidLoad {
@@ -81,7 +84,7 @@
   [self.tableView registerClass:[PodPlaylistTableViewCell class] forCellReuseIdentifier:@"cast"];
   [self.tableView setRowHeight:84];
   [self.navigationItem setRightBarButtonItem:self.editButtonItem];
-  [self libraryDidChange];
+  [self updateModel];
 }
 
 
@@ -90,6 +93,35 @@
   // Dispose of any resources that can be recreated.
   [_albumImageCache removeAllObjects];
 }
+
+// See comment on updateModel.
+- (void)setNeedsUpdating:(BOOL)needsUpdating {
+  if (_needsUpdating != needsUpdating) {
+    if (needsUpdating && nil == _deferUpdate) {
+      [self updateModel];
+      needsUpdating = NO;
+    }
+    _needsUpdating = needsUpdating;
+  }
+}
+
+// See comment on updateModel.
+- (void)setDeferUpdate:(NSTimer *)deferUpdate {
+  if (_deferUpdate != deferUpdate) {
+    [_deferUpdate invalidate];
+    _deferUpdate = deferUpdate;
+  }
+}
+
+// See comment on updateModel.
+- (void)updateTimerFired:(NSTimer *)timer {
+  [self setDeferUpdate:nil];
+  if ([self needsUpdating]) {
+    [self updateModel];
+    [self setNeedsUpdating:NO];
+  }
+}
+
 
 - (void)undoablyMoveItemAt:(NSIndexPath *)source to:(NSIndexPath *)destination {
   NSUndoManager *undoManager = self.undoManager;
@@ -110,7 +142,6 @@
   [_persistentOrder rememberMediaItems:_casts];
   MPMediaItemCollection *collection = [MPMediaItemCollection collectionWithItems:_casts];
   [_player setQueueWithItemCollection:collection];
-//  [delegate_ setNeedsUpdate];
 }
 
 - (void)setCurrentlyPlaying:(MPMediaItem *)currentlyPlaying {
@@ -246,6 +277,7 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
     PodPlayerViewController *player = [PodPlayerViewController sharedInstance];
     [player setCasts:_casts];
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    [self setDeferUpdate:[NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(updateTimerFired:) userInfo:nil repeats:NO]];
   }
 }
 
@@ -255,9 +287,14 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
     moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
            toIndexPath:(NSIndexPath *)toIndexPath {
   [self undoablyMoveItemAt:fromIndexPath to:toIndexPath];
+  [self setDeferUpdate:[NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(updateTimerFired:) userInfo:nil repeats:NO]];
 }
 
-- (void)libraryDidChange {
+/* We don't want to update the model whie we are editing it, so the notification just sets a BOOL ivar.
+  when we are not editing, the setter immediately calls updateModel.
+  When we are editing, we've set a defer timer. when the timer goes off, if we have a [ending update, we do it then.
+ */
+- (void)updateModel {
   MPMediaQuery *query = [MPMediaQuery podcastsQuery];
   MPMediaPropertyPredicate *predicate = [MPMediaPropertyPredicate
       predicateWithValue:@NO forProperty:MPMediaItemPropertyIsCloudItem];
@@ -305,6 +342,9 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
   [self.tableView reloadData];
 }
 
+- (void)libraryDidChange {
+  [self setNeedsUpdating:YES];
+}
 
 /*
 #pragma mark - Navigation

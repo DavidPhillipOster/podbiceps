@@ -66,4 +66,10 @@ enum {
   self.detailTextLabel.frame = br;
 }
 
+- (void)prepareForReuse {
+  [super prepareForReuse];
+  self.editing = NO;
+}
+
+
 @end

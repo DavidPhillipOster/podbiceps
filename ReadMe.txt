@@ -32,6 +32,8 @@ See AddMusic in Downloads for more things to take care of to get this right.
 * Keep track of which episodes I've played, when. (no U.I.)
 12/06/2014
 * receiving core motion data.
+1/25/2015
+* tableView fixes: should mess up less when moving/deleting items.
 
 NEXT -
 peripheral logging
@@ -42,8 +44,6 @@ TODO -
 - undo manager. undo labels.
 - when the app starts and there's something already playing, then make sure the currently playing item is in the tableview.
 - Keep track of which episodes I've played, when. (U.I.)
-
-- my sort
 
 - current item should be a superpositon of pie chart and 'speaker'
 - bug: After turning editing off, I saw a cell with editing still on. After re-ordering, there was a blank cell.
@@ -56,5 +56,10 @@ You can't write a dictionary to disk if the keys are numbers, because the plist 
 
 Still can't figure out how to get RemoteControlPlay etc. events.
 
+to convert audio to the preferred file format if iOS, use the mac command line tool. Example:
+afconvert -d LEI16 -f 'caff' fist.aif fist.caf
+
+
 BUG -
 animatedImageWithImages is incompatible with templateMode.
+when playing, and we get to the end of one item, app appears to advance to next item, then stop. previous, now all-played item isn't marked as played and deleted.'
