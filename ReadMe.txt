@@ -34,6 +34,8 @@ See AddMusic in Downloads for more things to take care of to get this right.
 * receiving core motion data.
 1/25/2015
 * tableView fixes: should mess up less when moving/deleting items.
+8/25/2019
+* Minor fix ups just before iOS 13.
 
 NEXT -
 peripheral logging

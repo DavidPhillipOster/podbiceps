@@ -51,10 +51,23 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
-    [self setTitle:NSLocalizedString(@"now playing", 0)];
-    _rate = 1;
+    [self initPodPlayerViewController];
   }
   return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if (self) {
+    [self initPodPlayerViewController];
+  }
+  return self;
+}
+
+
+- (void)initPodPlayerViewController {
+  [self setTitle:NSLocalizedString(@"now playing", 0)];
+  _rate = 1;
 }
 
 - (void)dealloc {

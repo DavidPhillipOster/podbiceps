@@ -51,33 +51,16 @@
 
 @implementation PodSettingsTableViewController
 
-// The designated initializer. Override to perform setup that is required before the view is loaded.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-  self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-  if (self) {
-    [self setTitle:NSLocalizedString(@"Settings", 0)];
-    UIImage *settingsImage0 = [[UIImage imageNamed:@"settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    UIBarButtonItem *settingBarItem = [[UIBarButtonItem alloc] initWithImage:settingsImage0 style:UIBarButtonItemStylePlain target:nil action:NULL];
-    [self.navigationItem setBackBarButtonItem:settingBarItem];
-    NSString *playList = [NSString stringWithFormat:@"%@ >", NSLocalizedString(@"Playlist", 0)];
-    UIBarButtonItem *tableItem = [[UIBarButtonItem alloc] initWithTitle:playList style:UIBarButtonItemStylePlain target:self action:@selector(pushPlaylist:)];
-    [self.navigationItem setRightBarButtonItem:tableItem];
-  }
-  return self;
-}
-
-#if 0 // experiment with animated image. Not tinted.
-UIImage *settingsImage0 = [[UIImage imageNamed:@"settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//  UIImage *settingsImage1 = [[UIImage imageNamed:@"settings1"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//  UIImage *settingsImage2 = [[UIImage imageNamed:@"settings2"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//  UIImage *settingsImage = [UIImage animatedImageWithImages:@[settingsImage0, settingsImage1, settingsImage2, settingsImage1] duration:1.4];
-UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:settingsImage0
-                                                             style:UIBarButtonItemStylePlain target:self action:@selector(showSettings:)];
-
-#endif
-
 - (void)viewDidLoad {
   [super viewDidLoad];
+  [self setTitle:NSLocalizedString(@"Settings", 0)];
+  UIImage *settingsImage0 = [[UIImage imageNamed:@"settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  UIBarButtonItem *settingBarItem = [[UIBarButtonItem alloc] initWithImage:settingsImage0 style:UIBarButtonItemStylePlain target:nil action:NULL];
+  [self.navigationItem setBackBarButtonItem:settingBarItem];
+  NSString *playList = [NSString stringWithFormat:@"%@ >", NSLocalizedString(@"Playlist", 0)];
+  UIBarButtonItem *tableItem = [[UIBarButtonItem alloc] initWithTitle:playList style:UIBarButtonItemStylePlain target:self action:@selector(pushPlaylist:)];
+  [self.navigationItem setRightBarButtonItem:tableItem];
+
   // will be resized
   UILabel *footer = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
   [footer setTextAlignment:NSTextAlignmentCenter];

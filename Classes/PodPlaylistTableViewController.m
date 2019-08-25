@@ -36,37 +36,57 @@
 
 @implementation PodPlaylistTableViewController
 
+- (instancetype)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if (self) {
+    [self initPodPlaylistTableViewController];
+  }
+  return self;
+}
+
+- (instancetype)initWithStyle:(UITableViewStyle)style {
+  self = [super initWithStyle:style];
+  if (self) {
+    [self initPodPlaylistTableViewController];
+  }
+  return self;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
-    _albumImageCache = [NSMutableDictionary dictionary];
-    _persistentOrder = [PodPersistent sharedInstance];
-    [self setTitle:NSLocalizedString(@"Playlist", 0)];
-    if ([MPMusicPlayerController respondsToSelector:@selector(systemMusicPlayer)]) {
-      [self setPlayer:[MPMusicPlayerController systemMusicPlayer]];
-    } else {
-      [self setPlayer:[MPMusicPlayerController iPodMusicPlayer]];
-    }
-    [_player setShuffleMode: MPMusicShuffleModeOff];
-    [_player setRepeatMode: MPMusicRepeatModeNone];
-    [_player beginGeneratingPlaybackNotifications];
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
-    [nc addObserver:self
-           selector:@selector(libraryDidChange)
-               name:MPMediaLibraryDidChangeNotification
-             object:library];
-    [library beginGeneratingLibraryChangeNotifications];
-    [nc addObserver:self
-           selector:@selector(playingItemDidChange:)
-               name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
-             object:_player];
-    [nc addObserver:self
-           selector:@selector(playbackStateChanged:)
-               name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
-             object:_player];
+    [self initPodPlaylistTableViewController];
   }
   return self;
+}
+
+- (void) initPodPlaylistTableViewController {
+  _albumImageCache = [NSMutableDictionary dictionary];
+  _persistentOrder = [PodPersistent sharedInstance];
+  [self setTitle:NSLocalizedString(@"Playlist", 0)];
+  if ([MPMusicPlayerController respondsToSelector:@selector(systemMusicPlayer)]) {
+    [self setPlayer:[MPMusicPlayerController systemMusicPlayer]];
+  } else {
+    [self setPlayer:[MPMusicPlayerController iPodMusicPlayer]];
+  }
+  [_player setShuffleMode: MPMusicShuffleModeOff];
+  [_player setRepeatMode: MPMusicRepeatModeNone];
+  [_player beginGeneratingPlaybackNotifications];
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
+  [nc addObserver:self
+         selector:@selector(libraryDidChange)
+             name:MPMediaLibraryDidChangeNotification
+           object:library];
+  [library beginGeneratingLibraryChangeNotifications];
+  [nc addObserver:self
+         selector:@selector(playingItemDidChange:)
+             name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
+           object:_player];
+  [nc addObserver:self
+         selector:@selector(playbackStateChanged:)
+             name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
+           object:_player];
 }
 
 - (void)dealloc {
