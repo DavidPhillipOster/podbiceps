@@ -35,7 +35,7 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = self.contentView.bounds;
     [button setAutoresizingMask:0x3F];
-    [button setTitle:NSLocalizedString(@"Myo setup", 0) forState:UIControlStateNormal];
+    [button setTitle:NSLocalizedString(@"Hardware setup", 0) forState:UIControlStateNormal];
     [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(myoSetup) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:button];

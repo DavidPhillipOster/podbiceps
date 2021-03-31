@@ -3,8 +3,6 @@ podbiceps
 
 A iOS program that plays podcasts. 
 
-See ReadMe.txt for more information.
-
-Eventually this might grow into a customized app for use with [myo](https://www.thalmic.com/en/myo/).
+See ReadMe.txt for more information, including customizing it to play other audio types.
 
 Apache license
