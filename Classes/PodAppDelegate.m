@@ -32,11 +32,9 @@
   DLOG(@"didFinishLaunching");
   [PodPeripheral sharedInstance]; // Create instance so it can begin connecting early in our run.
   [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-  if (&AVAudioSessionModeSpokenAudio) {
-    NSError *error = nil;
-    if (![[AVAudioSession sharedInstance] setMode:AVAudioSessionModeSpokenAudio error:&error]) {
-      NSLog(@"%@", error);
-    }
+  NSError *error = nil;
+  if ( ! [[AVAudioSession sharedInstance] setMode:AVAudioSessionModeSpokenAudio error:&error]) {
+    NSLog(@"%@", error);
   }
   CGRect bounds = [[UIScreen mainScreen] bounds];
   [self setWindow:[[UIWindow alloc] initWithFrame:bounds]];

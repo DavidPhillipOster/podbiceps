@@ -1,4 +1,13 @@
-To install this on your device, you'll need to edit the bundle identifier. change 'com.turbozen' to the prefix you registered with Apple.
+To install this on your device, you'll need to edit the bundle identifier. Change 'com.example' to the prefix you registered with Apple, set up your signing in the Signing panel of the target.
+
+To use this for something other than podcast, in updateModel, change:
+
+- (void)updateModel {
+  MPMediaQuery *query = [MPMediaQuery podcastsQuery];
+  MPMediaPropertyPredicate *predicate = [MPMediaPropertyPredicate
+      predicateWithValue:@NO forProperty:MPMediaItemPropertyIsCloudItem];
+
+to something more appropriate. songsQuery, maybe allowing iCloud items.
 
 11/15/2014 - I built a podcast app that uses the iPhone's library of podcasts
 I can reorder them, and play them, although the app doesn't yet go from one to the next.
@@ -34,8 +43,6 @@ See AddMusic in Downloads for more things to take care of to get this right.
 * receiving core motion data.
 1/25/2015
 * tableView fixes: should mess up less when moving/deleting items.
-8/25/2019
-* Minor fix ups just before iOS 13.
 
 NEXT -
 peripheral logging
@@ -47,7 +54,7 @@ TODO -
 - when the app starts and there's something already playing, then make sure the currently playing item is in the tableview.
 - Keep track of which episodes I've played, when. (U.I.)
 
-- current item should be a superpositon of pie chart and 'speaker'
+- current item should be a super position of pie chart and 'speaker'
 - bug: After turning editing off, I saw a cell with editing still on. After re-ordering, there was a blank cell.
 - have a deleted items controller where the user can inspect, and possibly undelete items.
 
@@ -64,4 +71,5 @@ afconvert -d LEI16 -f 'caff' fist.aif fist.caf
 
 BUG -
 animatedImageWithImages is incompatible with templateMode.
+
 when playing, and we get to the end of one item, app appears to advance to next item, then stop. previous, now all-played item isn't marked as played and deleted.'

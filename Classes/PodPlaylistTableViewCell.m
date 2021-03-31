@@ -13,6 +13,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 #import "PodPlaylistTableViewCell.h"
+#import "PodUtils.h"
 
 enum {
   kImageDimen = 24,
@@ -28,6 +29,7 @@ enum {
 // Uncomment to enable the info podcast controller button on each tableview cell.
 //    [self setAccessoryType:UITableViewCellAccessoryDetailButton];
     self.textLabel.font = [UIFont boldSystemFontOfSize:20];
+    self.textLabel.textColor = InkColor();
     self.textLabel.numberOfLines = 2;
     self.bottomIconView = [[UIImageView alloc] init];
     [self.contentView addSubview:self.bottomIconView];

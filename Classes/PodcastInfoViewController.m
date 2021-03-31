@@ -39,10 +39,6 @@
   [self setView:view];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-  return YES; // iOS 5
-}
-
 - (BOOL)shouldAutorotate {
   return YES; // iOS 6 up
 }

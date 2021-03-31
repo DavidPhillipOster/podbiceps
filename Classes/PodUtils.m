@@ -83,6 +83,15 @@ NSString *NumericDurationString(NSTimeInterval duration) {
   return result;
 }
 
+UIColor *InkColor() {
+  if (@available(iOS 13.0, *)) {
+    return [UIColor labelColor];
+  } else {
+    return [UIColor blackColor];
+  }
+}
+
+
 // Common code. draw the outer circle.
 static CGContextRef PieFrame(CGFloat dimension, CGFloat strokeWidth) {
   CGRect r = CGRectMake(0, 0, dimension, dimension);
@@ -90,7 +99,7 @@ static CGContextRef PieFrame(CGFloat dimension, CGFloat strokeWidth) {
   UIGraphicsBeginImageContextWithOptions(r.size, NO, scale);
   [[UIColor clearColor] set];
   UIRectFill(r);
-  [[UIColor blackColor] set];
+  [InkColor() set];
   CGContextRef c = UIGraphicsGetCurrentContext();
   if (strokeWidth) {
     r = CGRectInset(r, strokeWidth, strokeWidth);

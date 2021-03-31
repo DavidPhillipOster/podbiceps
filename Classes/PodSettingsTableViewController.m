@@ -20,6 +20,7 @@
 #import "PodPlaylistTableViewController.h"
 
 @interface PodSettingsTableViewController ()
+@property(nonatomic) UILabel *footer;
 - (void)myoSetup;
 @end
 
@@ -34,7 +35,7 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = self.contentView.bounds;
     [button setAutoresizingMask:0x3F];
-    [button setTitle:NSLocalizedString(@"Hardware setup", 0) forState:UIControlStateNormal];
+    [button setTitle:NSLocalizedString(@"Myo setup", 0) forState:UIControlStateNormal];
     [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(myoSetup) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:button];
@@ -62,15 +63,14 @@
   [self.navigationItem setRightBarButtonItem:tableItem];
 
   // will be resized
-  UILabel *footer = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-  [footer setTextAlignment:NSTextAlignmentCenter];
+  UILabel *footer = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 320, 44)];
+  self.footer = footer;
   [footer setNumberOfLines:0];
-  [footer setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin];
   [self.tableView setTableFooterView:footer];
   NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
   NSString *versionString = [infoDict objectForKey:@"CFBundleShortVersionString"];
   NSString *buildString = [infoDict objectForKey:@"CFBundleVersion"];
-  NSString *version = [NSString stringWithFormat:@"Version %@ (%@):\n by David Phillip Oster 11/2014",
+  NSString *version = [NSString stringWithFormat:@"Version %@ (%@):\n by David Phillip Oster 2014-2021",
       versionString, buildString];
   [footer setText:version];
   [self.tableView registerClass:[SettingsMyoTableViewCell class] forCellReuseIdentifier:@"0"];
@@ -80,6 +80,13 @@
   
   // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
   // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewWillLayoutSubviews {
+  [super viewWillLayoutSubviews];
+  CGRect bounds = self.tableView.bounds;
+  bounds.size.height = ceil([self.footer sizeThatFits:bounds.size].height);
+  self.footer.bounds = bounds;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -112,48 +119,5 @@
   return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

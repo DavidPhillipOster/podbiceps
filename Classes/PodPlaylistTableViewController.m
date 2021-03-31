@@ -64,21 +64,28 @@
   _albumImageCache = [NSMutableDictionary dictionary];
   _persistentOrder = [PodPersistent sharedInstance];
   [self setTitle:NSLocalizedString(@"Playlist", 0)];
-  if ([MPMusicPlayerController respondsToSelector:@selector(systemMusicPlayer)]) {
-    [self setPlayer:[MPMusicPlayerController systemMusicPlayer]];
-  } else {
-    [self setPlayer:[MPMusicPlayerController iPodMusicPlayer]];
-  }
+  [self setPlayer:[MPMusicPlayerController systemMusicPlayer]];
   [_player setShuffleMode: MPMusicShuffleModeOff];
   [_player setRepeatMode: MPMusicRepeatModeNone];
   [_player beginGeneratingPlaybackNotifications];
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-  MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
-  [nc addObserver:self
-         selector:@selector(libraryDidChange)
-             name:MPMediaLibraryDidChangeNotification
-           object:library];
-  [library beginGeneratingLibraryChangeNotifications];
+  [MPMediaLibrary requestAuthorization:^(MPMediaLibraryAuthorizationStatus status){
+    switch (status) {
+      case MPMediaLibraryAuthorizationStatusRestricted:
+      case MPMediaLibraryAuthorizationStatusAuthorized: {
+        MPMediaLibrary *library = [MPMediaLibrary defaultMediaLibrary];
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self
+               selector:@selector(libraryDidChange)
+                   name:MPMediaLibraryDidChangeNotification
+                 object:library];
+        [library beginGeneratingLibraryChangeNotifications];
+        break;
+      }
+      default:
+        break;
+    }
+  }];
   [nc addObserver:self
          selector:@selector(playingItemDidChange:)
              name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
@@ -332,8 +339,8 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
   [unplayed sortUsingComparator:^(id obj1, id obj2) {
     MPMediaItem *a = obj1;
     MPMediaItem *b = obj2;
-    NSUInteger orderA = [_persistentOrder indexOrderOfMediaItem:a];
-    NSUInteger orderB = [_persistentOrder indexOrderOfMediaItem:b];
+    NSUInteger orderA = [self.persistentOrder indexOrderOfMediaItem:a];
+    NSUInteger orderB = [self.persistentOrder indexOrderOfMediaItem:b];
     NSComparisonResult result = NSOrderedSame;
     if (NSNotFound != orderA && NSNotFound != orderB) {
       if (orderA <  orderB) {
