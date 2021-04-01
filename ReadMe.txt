@@ -47,7 +47,7 @@ See AddMusic in Downloads for more things to take care of to get this right.
 NEXT -
 peripheral logging
 peripheral graphing
-simply wiring it up and trying it.
+simply wiring it up and trying it
 
 TODO -
 - undo manager. undo labels.
