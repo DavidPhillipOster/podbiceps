@@ -94,6 +94,10 @@ static PodPlayerViewController *sPodPlayerViewController = nil;
   [view.skipForward addTarget:self action:@selector(skipForward:) forControlEvents:UIControlEventTouchUpInside];
   [view.skipBackward addTarget:self action:@selector(skipBack:) forControlEvents:UIControlEventTouchUpInside];
 
+  [view.slowDown addTarget:self action:@selector(slowDown:) forControlEvents:UIControlEventTouchUpInside];
+  [view.normalSpeed addTarget:self action:@selector(normalSpeed:) forControlEvents:UIControlEventTouchUpInside];
+  [view.speedUp addTarget:self action:@selector(speedUp:) forControlEvents:UIControlEventTouchUpInside];
+
   [view.goToStart addTarget:self action:@selector(gotoStart:) forControlEvents:UIControlEventTouchUpInside];
   [view.goToEnd addTarget:self action:@selector(gotoEnd:) forControlEvents:UIControlEventTouchUpInside];
   

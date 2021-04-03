@@ -34,10 +34,10 @@
     [self addSubview:_timeSlider];
 
     _timeUsed = [[UILabel alloc] init];
-    [_timeUsed setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
+    [_timeUsed setFont:[UIFont systemFontOfSize:[UIFont buttonFontSize]]];
     [self addSubview:_timeUsed];
     _timeToGo = [[UILabel alloc] init];
-    [_timeToGo setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
+    [_timeToGo setFont:[UIFont systemFontOfSize:[UIFont buttonFontSize]]];
     [_timeToGo setTextAlignment:NSTextAlignmentRight];
     [self addSubview:_timeToGo];
 
@@ -61,6 +61,21 @@
     [_goToEnd setImage:goToEnd forState:UIControlStateNormal];
     [_goToEnd setContentMode:UIViewContentModeCenter];
     [self addSubview:_goToEnd];
+    _slowDown = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *slowDownImage = [UIImage imageNamed:@"slowDown.fill" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
+    [_slowDown setImage:slowDownImage forState:UIControlStateNormal];
+    [_slowDown setContentMode:UIViewContentModeCenter];
+    [self addSubview:_slowDown];
+    _normalSpeed = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *normalSpeedImage = [UIImage imageNamed:@"normalSpeed.fill" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
+    [_normalSpeed setImage:normalSpeedImage forState:UIControlStateNormal];
+    [_normalSpeed setContentMode:UIViewContentModeCenter];
+    [self addSubview:_normalSpeed];
+    _speedUp = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *speedUpImage = [UIImage imageNamed:@"speedUp.fill" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
+    [_speedUp setImage:speedUpImage forState:UIControlStateNormal];
+    [_speedUp setContentMode:UIViewContentModeCenter];
+    [self addSubview:_speedUp];
 
     _playPause = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *play = [[UIImage imageNamed:@"play.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -78,29 +93,43 @@
   [super layoutSubviews];
   UIEdgeInsets inset = UIEdgeInsetsMake(_delegate.navigationHeight, 0, 10, 0);
   CGRect bounds = UIEdgeInsetsInsetRect([self bounds], inset);
-  CGRect top, bottom;
-  CGRectDivide(bounds, &bottom, &top, 130, CGRectMaxYEdge);
-  top = UIEdgeInsetsInsetRect(top, UIEdgeInsetsMake(0, 20, 10, 20));
-  CGRect timeBand, sliderFrame;
-  CGRectDivide(bottom, &bottom, &sliderFrame, 70, CGRectMaxYEdge);
-  bottom = UIEdgeInsetsInsetRect(bottom, UIEdgeInsetsMake(0, 0, 30, 0));
+  /* Divide bounds into 5 horizontal bands.  First, imagine it is all assigned
+   to the top band, textInfoBand.  Then whittle off slices for the the other
+   four bands, starting at the bottom. */
+  CGRect speedControlsBand, mainControlsBand, scrubberBand, timesBand, textInfoBand;
+  CGRectDivide(bounds, &speedControlsBand, &textInfoBand, 60, CGRectMaxYEdge);
+  CGRectDivide(textInfoBand, &mainControlsBand, &textInfoBand, 60, CGRectMaxYEdge);
+  CGRectDivide(textInfoBand, &scrubberBand, &textInfoBand, 60, CGRectMaxYEdge);
+  CGRectDivide(textInfoBand, &timesBand, &textInfoBand, 40, CGRectMaxYEdge);
+  speedControlsBand = UIEdgeInsetsInsetRect(speedControlsBand, UIEdgeInsetsMake(0, 20, 0, 20));
+  mainControlsBand = UIEdgeInsetsInsetRect(mainControlsBand, UIEdgeInsetsMake(0, 20, 0, 20));
+  scrubberBand = UIEdgeInsetsInsetRect(scrubberBand, UIEdgeInsetsMake(0, 20, 0, 20));
+  timesBand = UIEdgeInsetsInsetRect(timesBand, UIEdgeInsetsMake(0, 20, 0, 20));
+  textInfoBand = UIEdgeInsetsInsetRect(textInfoBand, UIEdgeInsetsMake(10, 20, 10, 20));
 
   CGRect left0, left15, right15, right0;
-  CGFloat bottomWidth = (CGFloat) floor(bottom.size.width / 5);
-  CGRectDivide(bottom, &left0, &bottom, bottomWidth, CGRectMinXEdge);
-  CGRectDivide(bottom, &right0, &bottom, bottomWidth, CGRectMaxXEdge);
-  CGRectDivide(bottom, &left15, &bottom, bottomWidth, CGRectMinXEdge);
-  CGRectDivide(bottom, &right15, &bottom, bottomWidth, CGRectMaxXEdge);
+  NSInteger mainControlsCount = 5;
+  CGFloat mainControlWidth = (CGFloat) floor(mainControlsBand.size.width / mainControlsCount);
+  CGRectDivide(mainControlsBand, &left0, &mainControlsBand, mainControlWidth, CGRectMinXEdge);
+  CGRectDivide(mainControlsBand, &right0, &mainControlsBand, mainControlWidth, CGRectMaxXEdge);
+  CGRectDivide(mainControlsBand, &left15, &mainControlsBand, mainControlWidth, CGRectMinXEdge);
+  CGRectDivide(mainControlsBand, &right15, &mainControlsBand, mainControlWidth, CGRectMaxXEdge);
   left0 = UIEdgeInsetsInsetRect(left0, UIEdgeInsetsMake(0, 10, 0, 0));
   right0 = UIEdgeInsetsInsetRect(right0, UIEdgeInsetsMake(0, 0, 0, 10));
-  sliderFrame = UIEdgeInsetsInsetRect(sliderFrame, UIEdgeInsetsMake(0, 10, 0, 10));
-  CGRectDivide(sliderFrame, &timeBand,  &sliderFrame, 20, CGRectMinYEdge);
   CGRect leftTimeLabel, rightTimeLabel;
-  CGRectDivide(timeBand, &leftTimeLabel, &timeBand, 80, CGRectMinXEdge);
-  CGRectDivide(timeBand, &rightTimeLabel, &timeBand, 80, CGRectMaxXEdge);
-  [_info setFrame:top];
-  [_playPause setFrame:bottom];
-  [_timeSlider setFrame:sliderFrame];
+  CGRectDivide(timesBand, &leftTimeLabel, &timesBand, 80, CGRectMinXEdge);
+  CGRectDivide(timesBand, &rightTimeLabel, &timesBand, 80, CGRectMaxXEdge);
+  [_info setFrame:textInfoBand];
+  CGRect slowDownFrame, speedUpFrame ;
+  NSInteger speedControlsCount = 3;
+  CGFloat speedControlWidth = (CGFloat) floor(speedControlsBand.size.width / speedControlsCount);
+  CGRectDivide(speedControlsBand, &slowDownFrame, &speedControlsBand, speedControlWidth, CGRectMinXEdge);
+  CGRectDivide(speedControlsBand, &speedUpFrame, &speedControlsBand, speedControlWidth, CGRectMaxXEdge);
+  [_slowDown setFrame:slowDownFrame];
+  [_normalSpeed setFrame:speedControlsBand];
+  [_speedUp setFrame:speedUpFrame];
+  [_playPause setFrame:mainControlsBand];
+  [_timeSlider setFrame:scrubberBand];
   [_timeUsed setFrame:leftTimeLabel];
   [_timeToGo setFrame:rightTimeLabel];
 
