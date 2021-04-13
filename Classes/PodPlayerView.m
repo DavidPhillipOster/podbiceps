@@ -63,16 +63,25 @@
     [self addSubview:_goToEnd];
     _slowDown = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *slowDownImage = [UIImage imageNamed:@"slowDown.fill" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
+    if (nil == slowDownImage) {
+      slowDownImage = [UIImage imageNamed:@"speedDown"];
+    }
     [_slowDown setImage:slowDownImage forState:UIControlStateNormal];
     [_slowDown setContentMode:UIViewContentModeCenter];
     [self addSubview:_slowDown];
     _normalSpeed = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *normalSpeedImage = [UIImage imageNamed:@"normalSpeed.fill" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
+    if (nil == normalSpeedImage) {
+      normalSpeedImage = [UIImage imageNamed:@"speedNormal"];
+    }
     [_normalSpeed setImage:normalSpeedImage forState:UIControlStateNormal];
     [_normalSpeed setContentMode:UIViewContentModeCenter];
     [self addSubview:_normalSpeed];
     _speedUp = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *speedUpImage = [UIImage imageNamed:@"speedUp.fill" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
+    if (nil == speedUpImage) {
+      speedUpImage = [UIImage imageNamed:@"speedUp"];
+    }
     [_speedUp setImage:speedUpImage forState:UIControlStateNormal];
     [_speedUp setContentMode:UIViewContentModeCenter];
     [self addSubview:_speedUp];

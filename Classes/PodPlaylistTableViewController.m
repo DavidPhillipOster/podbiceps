@@ -322,13 +322,13 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
   When we are editing, we've set a defer timer. when the timer goes off, if we have a pending update, we do it then.
  */
 - (void)updateModel {
-#if 0 // Turn this on to allow the whole song catalog.
+#if 1 // Turn this off to allow the whole song catalog.
   MPMediaQuery *query = [MPMediaQuery podcastsQuery];
-#else
-  MPMediaQuery *query = [MPMediaQuery songsQuery];
   MPMediaPropertyPredicate *predicate = [MPMediaPropertyPredicate
       predicateWithValue:@NO forProperty:MPMediaItemPropertyIsCloudItem];
   [query addFilterPredicate:predicate];
+#else
+  MPMediaQuery *query = [MPMediaQuery songsQuery];
 #endif
   NSMutableArray *unplayed = [[query items] mutableCopy];
   for (int i = ((int)[unplayed count]) - 1; 0 <= i; --i) {
