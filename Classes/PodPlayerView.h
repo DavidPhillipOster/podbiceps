@@ -30,6 +30,9 @@
 @property(nonatomic) UIButton *skipBackward;
 @property(nonatomic) UIButton *goToStart;
 @property(nonatomic) UIButton *goToEnd;
+@property(nonatomic) UIButton *slowDown;
+@property(nonatomic) UIButton *normalSpeed;
+@property(nonatomic) UIButton *speedUp;
 @end
 
 @protocol PodPlayerDelegate <NSObject>

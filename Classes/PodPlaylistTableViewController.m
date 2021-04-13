@@ -317,15 +317,19 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
   [self setDeferUpdate:[NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(updateTimerFired:) userInfo:nil repeats:NO]];
 }
 
-/* We don't want to update the model whie we are editing it, so the notification just sets a BOOL ivar.
+/* We don't want to update the model while we are editing it, so the notification just sets a BOOL ivar.
   when we are not editing, the setter immediately calls updateModel.
-  When we are editing, we've set a defer timer. when the timer goes off, if we have a [ending update, we do it then.
+  When we are editing, we've set a defer timer. when the timer goes off, if we have a pending update, we do it then.
  */
 - (void)updateModel {
+#if 0 // Turn this on to allow the whole song catalog.
   MPMediaQuery *query = [MPMediaQuery podcastsQuery];
+#else
+  MPMediaQuery *query = [MPMediaQuery songsQuery];
   MPMediaPropertyPredicate *predicate = [MPMediaPropertyPredicate
       predicateWithValue:@NO forProperty:MPMediaItemPropertyIsCloudItem];
   [query addFilterPredicate:predicate];
+#endif
   NSMutableArray *unplayed = [[query items] mutableCopy];
   for (int i = ((int)[unplayed count]) - 1; 0 <= i; --i) {
     MPMediaItem *cast = [unplayed objectAtIndex:i];
